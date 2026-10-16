@@ -1,0 +1,369 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import PillarStrip from '../components/PillarStrip.astro';
+import SplitSection from '../components/SplitSection.astro';
+import StatementBand from '../components/StatementBand.astro';
+import VideoEmbed from '../components/VideoEmbed.astro';
+import EventCard from '../components/EventCard.astro';
+import Accordion from '../components/Accordion.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Photo from '../components/Photo.astro';
+import EmptyState from '../components/EmptyState.astro';
+import { getFeaturedEvents, getFeaturedMedia, getHomepage, getResourceGroups, getSiteSettings } from '../lib/content';
+
+const site = getSiteSettings();
+const home = getHomepage();
+const events = getFeaturedEvents(3);
+const media = getFeaturedMedia(2);
+const resourceGroups = getResourceGroups();
+const pickResources = ['dmc', 'four-fields', 'abiding'].map((k) => resourceGroups.find((g) => g.key === k)).filter(Boolean);
+---
+
+<BaseLayout title={site.name} description={site.description}>
+  <Hero image={home.hero.image} kicker={home.hero.kicker} headline={home.hero.headline} lead={home.hero.lead} size="full">
+    <a class="btn btn--yellow" href={home.hero.primaryCta.href}>{home.hero.primaryCta.label}</a>
+    {home.hero.secondaryCta && <a class="btn btn--outline" href={home.hero.secondaryCta.href}>{home.hero.secondaryCta.label}</a>}
+  </Hero>
+
+  <PillarStrip />
+
+  <!-- Denton introduction + the three-step path -->
+  <section class="intro section" id="next-step">
+    <div class="container intro__grid">
+      <div class="intro__copy">
+        <p class="eyebrow eyebrow--rule">Welcome to {site.name}</p>
+        <h2 class="intro__title">{home.intro.title}</h2>
+        {home.intro.body.map((p) => <p class="intro__body">{p}</p>)}
+      </div>
+      <ol class="path" aria-label="Your next step">
+        {
+          home.pillars.map((p, i) => (
+            <li class="path__step">
+              <a class="path__link" href={`#${p.key}`}>
+                <span class="path__num" aria-hidden="true">0{i + 1}</span>
+                <span class="path__text">
+                  <span class="path__title">{p.titleLines.join(' ')}</span>
+                  <span class="path__hint">{p.cta.label}</span>
+                </span>
+                <span class="path__arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {
+    home.video && (
+      <section class="trailer section section--flush-top">
+        <div class="container container--narrow">
+          <div class="trailer__head">
+            <p class="eyebrow eyebrow--rule">Watch</p>
+            <h2 class="trailer__title">{home.video.title}</h2>
+            <p class="muted">{home.video.description}</p>
+          </div>
+          <VideoEmbed title={home.video.title} src={home.video.src} poster={{ src: home.video.poster, alt: '' }} duration={home.video.duration} />
+        </div>
+      </section>
+    )
+  }
+
+  <StatementBand text={home.scripture.quote} attribution={home.scripture.reference} tone="orange" />
+
+  {
+    home.pillars.map((p, i) => (
+      <SplitSection
+        id={p.key}
+        image={p.image}
+        eyebrow={p.eyebrow}
+        titleLines={p.titleLines}
+        body={p.body}
+        cta={p.cta}
+        secondaryLinks={p.secondaryLinks}
+        reverse={i % 2 === 1}
+        tone={i % 2 === 1 ? 'ink' : 'black'}
+      />
+    ))
+  }
+
+  <PillarStrip tone="black" />
+
+  <!-- Upcoming events -->
+  <section class="section" id="upcoming">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow eyebrow--rule">Develop</p>
+          <h2>Upcoming in Denton</h2>
+        </div>
+        <a class="link link--arrow" href="/events/">All events</a>
+      </div>
+      {
+        events.length > 0 ? (
+          <div class="grid-3">
+            {events.map((e) => (
+              <EventCard event={e} variant="tile" />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            title="No events scheduled yet"
+            body="Denton trainings and worship nights will be listed here as soon as they are confirmed. In the meantime, explore the training resources or send us a note."
+            cta={{ label: 'Browse resources', href: '/resources/' }}
+          />
+        )
+      }
+    </div>
+  </section>
+
+  <!-- MTC teaser -->
+  <SplitSection
+    image={home.mtcTeaser.image}
+    eyebrow={home.mtcTeaser.eyebrow}
+    titleLines={[home.mtcTeaser.title]}
+    body={home.mtcTeaser.body}
+    cta={home.mtcTeaser.cta}
+    reverse
+    tone="ink"
+    inline
+  />
+
+  <!-- Resources & media picks -->
+  <section class="section picks">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow eyebrow--rule">Tools & stories</p>
+          <h2>Resources to get you started</h2>
+        </div>
+        <a class="link link--arrow" href="/resources/">All resources</a>
+      </div>
+      <div class="picks__grid">
+        {
+          pickResources.map((g) => (
+            <a class="pick" href={`/resources/#${g!.key}`}>
+              {g!.icon ? (
+                <img class="pick__icon" src={g!.icon} alt="" width="64" height="64" loading="lazy" />
+              ) : g!.image ? (
+                <img class="pick__icon pick__icon--img" src={g!.image} alt="" width="64" height="64" loading="lazy" />
+              ) : null}
+              <span class="pick__text">
+                <span class="pick__title">{g!.number ? `${g!.number}. ` : ''}{g!.title}</span>
+                <span class="pick__tagline">{g!.tagline}</span>
+              </span>
+            </a>
+          ))
+        }
+        {
+          media.map((m) => (
+            <a class="pick pick--media" href="/media/">
+              <span class="pick__cover">
+                <Photo image={m.cover} widths={[160, 320]} sizes="80px" />
+              </span>
+              <span class="pick__text">
+                <span class="pick__kind">{m.type}</span>
+                <span class="pick__title">{m.title}</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="values theme-yellow section" id="values">
+    <div class="container values__grid">
+      <div class="values__intro">
+        <p class="eyebrow eyebrow--rule">Who we are</p>
+        <h2 class="values__title">{home.values.title}</h2>
+        <p class="lead">{home.values.intro}</p>
+        <img class="values__mark" src="/brand/we-are-sent-ones.png" alt="We are Sent Ones" width="495" height="400" loading="lazy" />
+      </div>
+      <div class="values__list">
+        <Accordion items={home.values.items} display name="values" />
+      </div>
+    </div>
+  </section>
+
+  {home.quote && <StatementBand text={home.quote.text} attribution={home.quote.attribution} tone="black" size="md" />}
+
+  <CtaBand title={home.finalCta.title} body={home.finalCta.body} primary={home.finalCta.primary} secondary={home.finalCta.secondary} tone="orange" />
+</BaseLayout>
+
+<style>
+  .intro__grid {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 64em) {
+    .intro__grid {
+      grid-template-columns: 1.2fr 1fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+  }
+  .intro__title {
+    font-size: var(--fs-h1);
+  }
+  .intro__body {
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+    max-width: 36rem;
+  }
+  .path {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .path__link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s var(--ease);
+  }
+  .path__link:hover {
+    color: var(--c-yellow);
+  }
+  .path__num {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--c-orange);
+    min-width: 2.5rem;
+  }
+  .path__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    flex: 1;
+  }
+  .path__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .path__hint {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .path__arrow {
+    font-size: 1.5rem;
+    color: var(--c-orange);
+    transition: transform 0.2s var(--ease);
+  }
+  .path__link:hover .path__arrow {
+    transform: translateX(4px);
+  }
+  .trailer__head {
+    margin-bottom: var(--space-5);
+  }
+  .trailer__title {
+    font-size: var(--fs-h2);
+    margin-bottom: var(--space-2);
+  }
+  .picks__grid {
+    display: grid;
+    gap: var(--space-4);
+  }
+  @media (min-width: 48em) {
+    .picks__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64em) {
+    .picks__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .pick {
+    --accent-text: var(--c-orange-ink);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .pick:hover {
+    border-color: var(--c-orange);
+    transform: translateY(-2px);
+  }
+  .pick__icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+  .pick__icon--img {
+    filter: invert(1);
+  }
+  .pick__cover {
+    width: 4.5rem;
+    height: 4.5rem;
+    flex-shrink: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--c-black);
+  }
+  .pick__cover :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pick__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .pick__kind {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+  }
+  .pick__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .pick__tagline {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+  .values__grid {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 64em) {
+    .values__grid {
+      grid-template-columns: 1fr 1.4fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+  }
+  .values__title {
+    font-size: var(--fs-display);
+  }
+  .values__mark {
+    width: min(16rem, 70%);
+    margin-top: var(--space-6);
+  }
+</style>

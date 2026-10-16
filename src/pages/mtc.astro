@@ -1,0 +1,380 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import PillarStrip from '../components/PillarStrip.astro';
+import StatementBand from '../components/StatementBand.astro';
+import Accordion from '../components/Accordion.astro';
+import InquiryForm from '../components/InquiryForm.astro';
+import SampleBadge from '../components/SampleBadge.astro';
+import { getMtc, getMtcSampleFlags } from '../lib/content';
+
+const mtc = getMtc();
+const sample = getMtcSampleFlags();
+const flag = (key: string) => (sample[key] ? 'demo' : 'confirmed') as 'demo' | 'confirmed';
+
+const facts = [
+  { key: 'dates', label: 'Dates', value: mtc.format.dates, fallback: 'Next cohort dates to be announced' },
+  { key: 'duration', label: 'Duration', value: mtc.format.duration, fallback: 'To be announced' },
+  { key: 'location', label: 'Location', value: mtc.format.location, fallback: 'Denton, Texas' },
+  { key: 'cost', label: 'Cost', value: mtc.cost, fallback: 'To be announced' },
+];
+---
+
+<BaseLayout title="Missions Training Center" description={mtc.intro}>
+  <Hero image={mtc.image} kicker={mtc.kicker} headline="Missions *Training* Center" lead={mtc.intro} size="page">
+    {
+      mtc.apply ? (
+        <a class="btn btn--yellow" href={mtc.apply.href} target={mtc.apply.external ? '_blank' : undefined} rel={mtc.apply.external ? 'noopener' : undefined}>
+          {mtc.apply.label}
+        </a>
+      ) : (
+        <a class="btn btn--yellow" href="#mtc-inquiry">
+          Ask about the next cohort
+        </a>
+      )
+    }
+    <a class="btn btn--outline" href="#faqs">Read the FAQs</a>
+  </Hero>
+
+  <!-- Key facts -->
+  <section class="facts theme-ink">
+    <div class="container facts__grid">
+      {
+        facts.map((f) => (
+          <div class="fact">
+            <p class="fact__label">
+              {f.label}
+              {f.value && <SampleBadge status={flag(f.key)} />}
+            </p>
+            <p class:list={['fact__value', { 'fact__value--tba': !f.value }]}>{f.value ?? f.fallback}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <StatementBand text={mtc.statement} tone="black" size="md" quote={false} />
+  <PillarStrip />
+
+  <!-- Who it's for -->
+  <section class="section" id="who">
+    <div class="container">
+      <p class="eyebrow eyebrow--rule">Who it's for</p>
+      <h2 class="section-title">Made for people who want to be stretched</h2>
+      <div class="grid-3 who">
+        {
+          mtc.audience.map((a, i) => (
+            <div class="who__item">
+              <span class="who__num" aria-hidden="true">0{i + 1}</span>
+              <h3 class="who__title">{a.title}</h3>
+              <p class="muted">{a.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Format & rhythms -->
+  <section class="section theme-ink" id="format">
+    <div class="container format">
+      <div class="format__intro">
+        <p class="eyebrow eyebrow--rule">Format</p>
+        <h2>Residential, local and hands-on</h2>
+        <p class="lead">
+          {mtc.format.residential ?? 'The residential format for Denton will be confirmed with the first cohort.'}
+          {mtc.format.residential && <SampleBadge status={flag('residential')} class="format__badge" />}
+        </p>
+        {
+          mtc.accommodation && (
+            <p class="muted">
+              {mtc.accommodation} <SampleBadge status={flag('accommodation')} />
+            </p>
+          )
+        }
+      </div>
+      <div class="rhythms">
+        <h3 class="rhythms__title">Weekly rhythm</h3>
+        <ul class="rhythms__list">
+          {
+            mtc.format.weeklyCommitment.map((r) => (
+              <li class="rhythm">
+                <span class="rhythm__hours">{r.hours}</span>
+                <span class="rhythm__text">
+                  <strong>{r.label}</strong>
+                  <span class="muted">{r.body}</span>
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Training focus -->
+  <section class="section" id="focus">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow eyebrow--rule">Training focus</p>
+          <h2>The whole pattern of Jesus' ministry</h2>
+        </div>
+        <a class="link link--arrow" href="/resources/#four-fields">Four Fields resources</a>
+      </div>
+      <ul class="focus">
+        {
+          mtc.focus.map((f, i) => (
+            <li class="focus__item">
+              <img class="focus__icon" src={f.icon} alt="" width="80" height="80" loading="lazy" />
+              <span class="focus__num" aria-hidden="true">{i}</span>
+              <h3 class="focus__title">{f.title}</h3>
+              <p class="muted small">{f.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Eligibility & application -->
+  <section class="section theme-yellow" id="apply">
+    <div class="container apply">
+      <div>
+        <p class="eyebrow eyebrow--rule">Eligibility</p>
+        <h2>Who can apply</h2>
+        <ul class="apply__list">
+          {mtc.eligibility.map((e) => <li>{e}</li>)}
+        </ul>
+        {
+          (mtc.cost || mtc.financialSupport) && (
+            <div class="apply__cost">
+              {mtc.cost && (
+                <p>
+                  <strong>Cost:</strong> {mtc.cost} <SampleBadge status={flag('cost')} />
+                </p>
+              )}
+              {mtc.financialSupport && (
+                <p>
+                  <strong>Financial support:</strong> {mtc.financialSupport} <SampleBadge status={flag('financialSupport')} />
+                </p>
+              )}
+            </div>
+          )
+        }
+      </div>
+      <div>
+        <p class="eyebrow eyebrow--rule">Application</p>
+        <h2>How to apply</h2>
+        <ol class="steps">
+          {mtc.applicationSteps.map((s) => <li>{s}</li>)}
+        </ol>
+        {
+          mtc.apply ? (
+            <p>
+              <a class="btn btn--black" href={mtc.apply.href} target={mtc.apply.external ? '_blank' : undefined} rel={mtc.apply.external ? 'noopener' : undefined}>
+                {mtc.apply.label}
+              </a>{' '}
+              <SampleBadge status={flag('apply')} />
+            </p>
+          ) : (
+            <a class="btn btn--black" href="#mtc-inquiry">
+              Start with an inquiry
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQs -->
+  <section class="section" id="faqs">
+    <div class="container container--narrow">
+      <p class="eyebrow eyebrow--rule">Questions</p>
+      <h2 class="faq__title">FAQs</h2>
+      <Accordion items={mtc.faqs.map((f) => ({ title: f.question, body: f.answer }))} name="mtc-faq" exclusive={false} />
+    </div>
+  </section>
+
+  <InquiryForm id="mtc-inquiry" title="Got questions about the MTC?" intro={mtc.contactNote} defaultTopic="Missions Training Center" />
+</BaseLayout>
+
+<style>
+  .facts {
+    border-bottom: 3px solid var(--c-orange);
+  }
+  .facts__grid {
+    display: grid;
+    gap: var(--space-5);
+    padding-block: var(--space-6);
+  }
+  @media (min-width: 40em) {
+    .facts__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64em) {
+    .facts__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .fact__label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-2);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    color: var(--accent-text);
+  }
+  .fact__value {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .fact__value--tba {
+    color: var(--text-muted);
+  }
+  .who__item {
+    padding-top: var(--space-4);
+    border-top: 2px solid var(--c-orange);
+  }
+  .who__num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--c-orange);
+    line-height: 1;
+    margin-bottom: var(--space-3);
+  }
+  .who__title {
+    font-size: var(--fs-h4);
+  }
+  .format {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 64em) {
+    .format {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+  }
+  .format__badge {
+    vertical-align: middle;
+  }
+  .rhythms__title {
+    font-size: var(--fs-h4);
+    color: var(--c-yellow);
+  }
+  .rhythms__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .rhythm {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .rhythm__hours {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    color: var(--accent-text);
+    text-transform: uppercase;
+  }
+  .rhythm__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: var(--fs-small);
+  }
+  .focus {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (min-width: 48em) {
+    .focus {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64em) {
+    .focus {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+  .focus__item {
+    --accent-text: var(--c-orange-ink);
+    position: relative;
+    padding: var(--space-5) var(--space-4);
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    text-align: center;
+  }
+  .focus__icon {
+    width: 4.5rem;
+    height: 4.5rem;
+    margin: 0 auto var(--space-3);
+    object-fit: contain;
+  }
+  .focus__num {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.75rem;
+    font-family: var(--font-display);
+    color: var(--accent-text);
+    font-size: 1.25rem;
+  }
+  .focus__title {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+  .focus__item p {
+    margin: 0;
+  }
+  .apply {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 64em) {
+    .apply {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-8);
+    }
+  }
+  .apply__list,
+  .steps {
+    padding-left: 1.25rem;
+    margin-bottom: var(--space-5);
+  }
+  .apply__list li,
+  .steps li {
+    margin-bottom: 0.6rem;
+    padding-left: 0.25rem;
+  }
+  .steps {
+    list-style: decimal-leading-zero;
+    font-weight: 600;
+  }
+  .apply__cost p {
+    margin-bottom: 0.5rem;
+  }
+  .faq__title {
+    font-size: var(--fs-h1);
+    color: var(--c-yellow);
+  }
+</style>

@@ -1,0 +1,18 @@
+---
+import type { ContentStatus } from '../lib/types';
+
+interface Props {
+  status: ContentStatus;
+  label?: string;
+  class?: string;
+}
+const { status, label = 'Sample', class: className = '' } = Astro.props;
+---
+
+{
+  status === 'demo' && (
+    <span class:list={['badge badge--sample', className]} title="Fictional sample content for layout review">
+      {label}
+    </span>
+  )
+}

@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import PillarStrip from '../../components/PillarStrip.astro';
+import OpportunityCard from '../../components/OpportunityCard.astro';
+import FilterChips from '../../components/FilterChips.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import StatementBand from '../../components/StatementBand.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getOpportunities } from '../../lib/content';
+
+const opportunities = getOpportunities();
+---
+
+<BaseLayout
+  title="Deployment Opportunities"
+  description="Local, regional and international field deployment opportunities for believers sent from Denton, Texas."
+>
+  <Hero
+    image={{ src: 'aerial-city', alt: 'An aerial view of a dense city neighborhood' }}
+    kicker="Deploy with purpose"
+    headline="Where will you *go?*"
+    lead="The mission field is all around us. Whether you are called to a Denton neighborhood, a North Texas town, or an unreached people group overseas, these are the places we are helping people go, prepared and supported."
+    size="page"
+  />
+  <PillarStrip />
+
+  <section class="section" id="opportunities">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow eyebrow--rule">Current opportunities</p>
+          <h2>Local. Regional. International.</h2>
+        </div>
+      </div>
+
+      {
+        opportunities.length > 0 ? (
+          <>
+            <FilterChips
+              label="Filter by scope"
+              attr="scope"
+              target="#opp-list"
+              options={[
+                { value: 'local', label: 'Local' },
+                { value: 'regional', label: 'Regional' },
+                { value: 'international', label: 'International' },
+              ]}
+              emptyMessage="No opportunities in that scope right now."
+            />
+            <div id="opp-list" class="grid-2">
+              {opportunities.map((o) => (
+                <OpportunityCard opportunity={o} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <EmptyState
+            title="Opportunities are being confirmed"
+            body="We are working with the Denton team and field partners to publish the first deployment opportunities. If you already sense God sending you somewhere, tell us and we will walk with you."
+            cta={{ label: 'Tell us where you feel sent', href: '/resources/#questions' }}
+          />
+        )
+      }
+    </div>
+  </section>
+
+  <StatementBand text="Whether you're called locally or globally, we want to help equip and empower you to be as fruitful as possible in your field." tone="orange" size="md" quote={false} />
+
+  <section class="section how">
+    <div class="container">
+      <p class="eyebrow eyebrow--rule">How deployment works</p>
+      <h2 class="section-title">From "I'm ready" to "I'm sent"</h2>
+      <ol class="how__steps">
+        <li>
+          <h3>Talk with a deploy coach</h3>
+          <p class="muted">Share where you sense God sending you. Together we test the call, the timing, and the preparation still needed.</p>
+        </li>
+        <li>
+          <h3>Train in the field here first</h3>
+          <p class="muted">Everyone we send practices entry, gospel sharing and discipleship in Denton before going anywhere else.</p>
+        </li>
+        <li>
+          <h3>Prepare and go</h3>
+          <p class="muted">Cultural, spiritual and practical preparation, a sending community that prays, and a coach who stays in touch on the field.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <CtaBand
+    title="I'm ready, send me."
+    body="Ready to deploy to a local, regional, or global mission field? We are ready to help you launch."
+    primary={{ label: 'Talk to a deploy coach', href: '/resources/#questions' }}
+    secondary={{ label: 'Missions Training Center', href: '/mtc/' }}
+    tone="yellow"
+  />
+</BaseLayout>
+
+<style>
+  .how__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-6);
+    counter-reset: step;
+  }
+  @media (min-width: 48em) {
+    .how__steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .how__steps li {
+    counter-increment: step;
+    padding-top: var(--space-4);
+    border-top: 2px solid var(--c-orange);
+  }
+  .how__steps li::before {
+    content: counter(step, decimal-leading-zero);
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--c-orange);
+    line-height: 1;
+    margin-bottom: var(--space-3);
+  }
+  .how__steps h3 {
+    font-size: var(--fs-h4);
+  }
+</style>

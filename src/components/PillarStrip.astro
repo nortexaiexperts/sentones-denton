@@ -1,0 +1,147 @@
+---
+/**
+ * The signature orange marquee strip: DISCOVER YOUR CALLING 〰 DEVELOP YOUR SKILLS 〰 DEPLOY WITH PURPOSE.
+ * Scrolls slowly, pauses on hover/focus or via the pause button, and is static when the
+ * visitor prefers reduced motion.
+ */
+interface Props {
+  tone?: 'orange' | 'yellow' | 'black';
+}
+const { tone = 'orange' } = Astro.props;
+const items = ['Discover your calling', 'Develop your skills', 'Deploy with purpose'];
+// Enough repetitions to fill ultra-wide screens before the loop restarts.
+const group = Array.from({ length: 4 }, () => items).flat();
+---
+
+<div class:list={['strip', `strip--${tone}`]} data-strip>
+  <p class="visually-hidden">Discover your calling. Develop your skills. Deploy with purpose.</p>
+  <div class="strip__track" aria-hidden="true">
+    {
+      [0, 1].map(() => (
+        <div class="strip__group">
+          {group.map((text) => (
+            <span class="strip__item">
+              {text}
+              <svg class="strip__wave" viewBox="0 0 32 12" width="28" height="10" aria-hidden="true">
+                <path d="M1 6c3-5 6-5 9 0s6 5 9 0 6-5 9 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+              </svg>
+            </span>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+  <button class="strip__pause" type="button" aria-pressed="false" data-strip-toggle>
+    <span class="visually-hidden">Pause scrolling text</span>
+    <svg class="strip__icon strip__icon--pause" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M3 2h4v12H3zM9 2h4v12H9z" fill="currentColor"/></svg>
+    <svg class="strip__icon strip__icon--play" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>
+  </button>
+</div>
+
+<style>
+  .strip {
+    --strip-bg: var(--c-orange);
+    --strip-fg: var(--c-black);
+    position: relative;
+    background: var(--strip-bg);
+    color: var(--strip-fg);
+    overflow: hidden;
+    padding-block: 0.8rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .strip--yellow {
+    --strip-bg: var(--c-yellow);
+  }
+  .strip--black {
+    --strip-bg: var(--c-black);
+    --strip-fg: var(--c-orange);
+    border-block: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .strip__track {
+    display: flex;
+    width: max-content;
+    animation: strip-scroll 70s linear infinite;
+  }
+  .strip__group {
+    display: flex;
+    flex-shrink: 0;
+  }
+  .strip__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.6rem;
+    padding-right: 1.6rem;
+  }
+  .strip__wave {
+    flex-shrink: 0;
+  }
+  .strip:hover .strip__track,
+  .strip:focus-within .strip__track,
+  .strip.is-paused .strip__track {
+    animation-play-state: paused;
+  }
+  .strip__pause {
+    position: absolute;
+    top: 50%;
+    right: 0.6rem;
+    transform: translateY(-50%);
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--strip-fg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .strip--black .strip__pause {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .strip__pause:hover {
+    background: rgba(0, 0, 0, 0.32);
+  }
+  .strip__icon--play {
+    display: none;
+  }
+  .strip.is-paused .strip__icon--play {
+    display: block;
+  }
+  .strip.is-paused .strip__icon--pause {
+    display: none;
+  }
+  @keyframes strip-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .strip__track {
+      animation: none;
+    }
+    .strip__pause {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-strip]').forEach((strip) => {
+    const btn = strip.querySelector<HTMLButtonElement>('[data-strip-toggle]');
+    btn?.addEventListener('click', () => {
+      const paused = strip.classList.toggle('is-paused');
+      btn.setAttribute('aria-pressed', String(paused));
+      const label = btn.querySelector('.visually-hidden');
+      if (label) label.textContent = paused ? 'Resume scrolling text' : 'Pause scrolling text';
+    });
+  });
+</script>

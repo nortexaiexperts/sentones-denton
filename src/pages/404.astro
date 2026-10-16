@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import { getSiteSettings } from '../lib/content';
+
+const site = getSiteSettings();
+---
+
+<BaseLayout title="Page not found" description="That page could not be found." noindex>
+  <Hero
+    image={{ src: 'walking-together', alt: 'A group of people walking together along a muddy street' }}
+    kicker="404 · Page not found"
+    headline="*Lost?* The field is still all around you."
+    lead="The page you were looking for has moved or never existed. Here are the places most people are heading."
+    size="page"
+  >
+    <a class="btn btn--yellow" href="/">Back to home</a>
+    <a class="btn btn--outline" href="/events/">Upcoming events</a>
+  </Hero>
+  <section class="section">
+    <div class="container">
+      <ul class="lost">
+        <li><a class="link link--arrow" href="/resources/#coaching">Discover your calling</a></li>
+        <li><a class="link link--arrow" href="/mtc/">Missions Training Center</a></li>
+        <li><a class="link link--arrow" href="/deployment-opportunities/">Deployment opportunities</a></li>
+        <li><a class="link link--arrow" href="/resources/">Training resources</a></li>
+        <li><a class="link link--arrow" href="/media/">Media</a></li>
+        <li><a class="link link--arrow" href="/blog/">Blog</a></li>
+      </ul>
+      <p class="muted small">{site.name}</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lost {
+    list-style: none;
+    margin: 0 0 var(--space-6);
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5) var(--space-7);
+  }
+</style>

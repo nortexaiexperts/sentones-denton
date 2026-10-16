@@ -1,0 +1,133 @@
+/* Sent Ones design tokens, extracted from sentones.com (Enfold theme vars) on 2026-10-14.
+   Drop into the new site as-is or import from a global stylesheet. */
+
+@font-face {
+  font-family: "Bebas Neue";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/BebasNeue-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Bebas Neue";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/BebasNeue-400-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/Montserrat-variable-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/Montserrat-variable-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/Montserrat-variable-italic-latin-ext.woff2") format("woff2");
+}
+/* Montserrat italic (latin subset) was a 404 on the source site; pull it from Google Fonts if needed. */
+
+:root {
+  /* brand colors */
+  --so-orange: #f95103;
+  --so-orange-hover: #d73001;
+  --so-orange-dark: #b51000;
+  --so-orange-stripe: #fb7325;
+  --so-orange-stripe-2: #fa6214;
+  --so-yellow: #f5de57;
+  --so-black: #000000;
+  --so-near-black: #1c1c1c;
+  --so-grey-700: #484848;
+  --so-grey-600: #595959;
+  --so-grey-300: #c2c2c2;
+  --so-grey-100: #f8f8f8;
+  --so-white: #ffffff;
+
+  /* semantic */
+  --so-bg: var(--so-black);
+  --so-text: var(--so-white);
+  --so-text-meta: var(--so-grey-300);
+  --so-heading: var(--so-white);
+  --so-link: var(--so-orange);
+  --so-button-bg: var(--so-orange);
+  --so-button-border: var(--so-orange-hover);
+  --so-button-text: var(--so-white);
+  --so-footer-bg: var(--so-white);
+  --so-footer-text: var(--so-orange);
+
+  /* type */
+  --so-font-heading: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
+  --so-font-body: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --so-size-body: 17px;
+  --so-size-h1: clamp(56px, 10vw, 144px);
+  --so-size-h2: clamp(40px, 6vw, 80px);
+  --so-size-h3: clamp(28px, 3vw, 40px);
+  --so-leading-heading: 0.95;
+
+  /* shape + spacing */
+  --so-radius: 3px;
+  --so-space-unit: 4px;
+}
+
+body {
+  background: var(--so-bg);
+  color: var(--so-text);
+  font-family: var(--so-font-body);
+  font-size: var(--so-size-body);
+}
+h1, h2, h3, .so-heading {
+  font-family: var(--so-font-heading);
+  font-weight: 400;
+  line-height: var(--so-leading-heading);
+  text-transform: uppercase;
+  color: var(--so-heading);
+}
+h1 { font-size: var(--so-size-h1); }
+h2 { font-size: var(--so-size-h2); }
+h3 { font-size: var(--so-size-h3); }
+
+.so-button {
+  display: inline-block;
+  background: var(--so-button-bg);
+  border: 1px solid var(--so-button-border);
+  color: var(--so-button-text);
+  font-family: var(--so-font-body);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  border-radius: var(--so-radius);
+  text-decoration: none;
+}
+.so-button:hover { background: var(--so-orange-hover); }
+
+/* the signature orange marquee strip */
+.so-marquee {
+  background: var(--so-orange);
+  color: var(--so-black);
+  font-family: var(--so-font-body);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 10px 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* content: "DISCOVER YOUR CALLING 〰️ DEVELOP YOUR SKILLS 〰️ DEPLOY WITH PURPOSE 〰️" repeated */

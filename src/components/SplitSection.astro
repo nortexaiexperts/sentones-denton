@@ -1,0 +1,149 @@
+---
+/**
+ * 50/50 photo + copy section, alternating sides. The brand's core editorial pattern.
+ */
+import type { ImageRef, Link } from '../lib/types';
+import Photo from './Photo.astro';
+
+interface Props {
+  image: ImageRef;
+  eyebrow?: string;
+  titleLines: string[];
+  body?: string;
+  cta?: Link;
+  secondaryLinks?: Link[];
+  reverse?: boolean;
+  tone?: 'black' | 'ink' | 'yellow';
+  id?: string;
+  headingLevel?: 'h2' | 'h3';
+  /** Make the headline a single-line (not stacked) heading */
+  inline?: boolean;
+}
+
+const {
+  image,
+  eyebrow,
+  titleLines,
+  body,
+  cta,
+  secondaryLinks = [],
+  reverse = false,
+  tone = 'black',
+  id,
+  headingLevel = 'h2',
+  inline = false,
+} = Astro.props;
+const Heading = headingLevel;
+const themeClass = tone === 'yellow' ? 'theme-yellow' : tone === 'ink' ? 'theme-ink' : 'theme-dark';
+---
+
+<section class:list={['split', themeClass, { 'split--reverse': reverse }]} id={id}>
+  <div class="split__media">
+    <Photo image={image} widths={[480, 768, 1024, 1280]} sizes="(min-width: 64em) 50vw, 100vw" class="split__img" />
+  </div>
+  <div class="split__panel">
+    <div class="split__copy">
+      {eyebrow && <p class="eyebrow eyebrow--rule">{eyebrow}</p>}
+      <Heading class:list={['split__title', { 'split__title--inline': inline }]}>
+        {titleLines.map((line, i) => (
+          <span class="stacked">
+            {line}
+            {inline && i < titleLines.length - 1 ? ' ' : ''}
+          </span>
+        ))}
+      </Heading>
+      {body && <p class="split__body">{body}</p>}
+      <slot />
+      {
+        (cta || secondaryLinks.length > 0) && (
+          <div class="split__actions">
+            {cta && (
+              <a class="btn btn--yellow" href={cta.href}>
+                {cta.label}
+              </a>
+            )}
+            {secondaryLinks.map((l) => (
+              <a class="link link--arrow" href={l.href}>
+                {l.label}
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .split__media {
+    position: relative;
+    min-height: 16rem;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--c-grey-800);
+  }
+  .split__media :global(picture),
+  .split__media :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .split__panel {
+    display: flex;
+    align-items: center;
+    padding: clamp(2.5rem, 6vw, 5rem) var(--gutter);
+  }
+  .split__copy {
+    max-width: 34rem;
+    width: 100%;
+  }
+  .split__title {
+    font-size: var(--fs-h1);
+    margin-bottom: var(--space-5);
+  }
+  .split__title--inline .stacked {
+    display: inline;
+  }
+  .split__body {
+    font-size: 1.0625rem;
+    max-width: 32rem;
+    margin-bottom: var(--space-5);
+  }
+  .split__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-5);
+  }
+  @media (min-width: 64em) {
+    .split {
+      grid-template-columns: 1fr 1fr;
+      min-height: 38rem;
+    }
+    .split__media {
+      aspect-ratio: auto;
+      min-height: 100%;
+    }
+    .split--reverse .split__media {
+      order: 2;
+    }
+    .split--reverse .split__panel {
+      order: 1;
+    }
+    .split__panel {
+      padding-inline: clamp(2.5rem, 6vw, 6rem);
+    }
+    .split:not(.split--reverse) .split__panel {
+      justify-content: flex-start;
+    }
+    .split--reverse .split__panel {
+      justify-content: flex-end;
+    }
+  }
+</style>

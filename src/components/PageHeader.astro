@@ -1,0 +1,35 @@
+---
+/** Simple black page header for pages that do not need a photographic hero. */
+interface Props {
+  kicker?: string;
+  title: string;
+  lead?: string;
+}
+const { kicker, title, lead } = Astro.props;
+---
+
+<header class="page-header">
+  <div class="container">
+    {kicker && <p class="eyebrow eyebrow--rule">{kicker}</p>}
+    <h1 class="page-header__title">{title}</h1>
+    {lead && <p class="page-header__lead">{lead}</p>}
+    <slot />
+  </div>
+</header>
+
+<style>
+  .page-header {
+    padding-block: clamp(3rem, 7vw, 6rem) clamp(2rem, 5vw, 4rem);
+    border-bottom: 3px solid var(--c-orange);
+  }
+  .page-header__title {
+    font-size: var(--fs-display);
+    margin-bottom: var(--space-4);
+  }
+  .page-header__lead {
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    max-width: 40rem;
+    margin: 0;
+  }
+</style>

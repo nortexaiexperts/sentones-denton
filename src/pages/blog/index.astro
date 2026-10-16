@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import FilterChips from '../../components/FilterChips.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getBlogCategories, getPosts } from '../../lib/content';
+
+const posts = getPosts();
+const categories = getBlogCategories();
+const [featured, ...rest] = posts;
+---
+
+<BaseLayout
+  title="Blog"
+  description="Principles and stories written by Sent Ones in Denton, for the Body of Christ: calling, disciple-making, church formation and God's mission."
+>
+  <Hero
+    image={{ src: 'street-scene', alt: 'People walking along a muddy street in a hillside town' }}
+    kicker="Stories & principles"
+    headline="The Sent Ones *Denton* blog"
+    lead="Principles and stories written by Sent Ones, for the Body of Christ."
+    size="short"
+  />
+
+  <section class="section" id="posts">
+    <div class="container">
+      {
+        posts.length > 0 ? (
+          <>
+            <FilterChips
+              label="Filter articles by category"
+              attr="categories"
+              target="#post-list"
+              multi
+              options={categories.map((c) => ({ value: c, label: c }))}
+              emptyMessage="No articles in that category yet."
+            />
+            <div id="post-list" class="posts">
+              {featured && (
+                <div class="posts__featured" data-categories={featured.categories.join('|')}>
+                  <BlogCard post={featured} featured />
+                </div>
+              )}
+              <div class="posts__grid">
+                {rest.map((p) => (
+                  <div data-categories={p.categories.join('|')}>
+                    <BlogCard post={p} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <EmptyState
+            title="First articles coming soon"
+            body="Stories and principles from the Denton team will be published here. Until then, the Sent Ones podcasts and training resources are a great place to start."
+            cta={{ label: 'Browse media', href: '/media/' }}
+          />
+        )
+      }
+    </div>
+  </section>
+
+  <CtaBand
+    title="Have a story from the field?"
+    body="We would love to hear what God is doing through believers in Denton. Share it with the team and we may feature it here."
+    primary={{ label: 'Share your story', href: '/resources/#questions' }}
+    secondary={{ label: 'Listen to the podcasts', href: '/media/' }}
+    tone="ink"
+  />
+</BaseLayout>
+
+<style>
+  .posts {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .posts__featured[hidden] {
+    display: none;
+  }
+  .posts__grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+  @media (min-width: 48em) {
+    .posts__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64em) {
+    .posts__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .posts__grid > div[hidden] {
+    display: none;
+  }
+</style>

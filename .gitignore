@@ -1,0 +1,26 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# environment (keep the examples)
+.env
+.env.*
+!.env.example
+
+# future Sanity Studio
+studio/node_modules/
+studio/dist/
+studio/.sanity/
+sanity-seed/
+
+# local review artifacts
+qa/screenshots/*.png
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json

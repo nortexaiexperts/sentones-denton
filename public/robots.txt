@@ -1,0 +1,4 @@
+# Preview / staging: nothing should be indexed until the client approves launch.
+# Replace with "Allow: /" + sitemap line on the production deployment.
+User-agent: *
+Disallow: /

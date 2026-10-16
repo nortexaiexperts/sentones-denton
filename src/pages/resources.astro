@@ -1,0 +1,343 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import PillarStrip from '../components/PillarStrip.astro';
+import InquiryForm from '../components/InquiryForm.astro';
+import ResourceLinks from '../components/ResourceLinks.astro';
+import { getCoachingOptions, getResourceGroups } from '../lib/content';
+
+const groups = getResourceGroups();
+const coaching = getCoachingOptions();
+const byKey = (k: string) => groups.find((g) => g.key === k)!;
+const dmc = byKey('dmc');
+const mission = byKey('mission-of-god');
+const fourFields = byKey('four-fields');
+const fields = groups.filter((g) => g.number && g.number !== 'X');
+const develop = byKey('develop');
+---
+
+<BaseLayout
+  title="Resources"
+  description="Training and coaching resources from Sent Ones: the Four Fields of kingdom growth, disciple-making tools, studies, and coaching conversations for believers in Denton."
+>
+  <Hero
+    image={{ src: 'notebook', alt: 'A person writing notes in a notebook' }}
+    kicker="Discover & develop"
+    headline="Training & *coaching* resources"
+    lead="Curated tools that help you make disciples and plant churches that mature, multiply, and have a global impact. Shared from the wider Sent Ones family and used by the Denton team."
+    size="page"
+  >
+    <a class="btn btn--yellow" href="#four-fields">Start with the Four Fields</a>
+    <a class="btn btn--outline" href="#coaching">Talk to a coach</a>
+  </Hero>
+  <PillarStrip />
+
+  <!-- Coaching (Discover) -->
+  <section class="section" id="coaching">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow eyebrow--rule">Discover your calling</p>
+          <h2>Coaching conversations</h2>
+        </div>
+        <p class="muted small coaching__note">Requests go to the Denton team through the form below.</p>
+      </div>
+      <div class="grid-3">
+        {
+          coaching.map((c) => (
+            <div class="coach card">
+              <div class="card__body">
+                <h3 class="coach__title">{c.title}</h3>
+                <p class="muted">{c.body}</p>
+                <div class="card__footer">
+                  <a class="btn btn--yellow btn--sm" href={c.cta.href}>
+                    {c.cta.label}
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- DMC start-here block (orange) -->
+  <section class="dmc theme-orange" id="dmc">
+    <div class="container dmc__grid">
+      <div>
+        <p class="eyebrow eyebrow--rule">Start here</p>
+        <h2 class="dmc__title">{dmc.title}</h2>
+        <p class="lead">{dmc.description}</p>
+        <div class="btn-row">
+          {dmc.items[0] && <a class="btn btn--black" href={dmc.items[0].links[0].href}>{dmc.items[0].links[0].label}</a>}
+          <span class="small">Shared Sent Ones resource</span>
+        </div>
+      </div>
+      <img class="dmc__logo" src={dmc.image} alt="Disciple Making Communities, est. AD 33" width="320" height="320" loading="lazy" />
+    </div>
+  </section>
+
+  <!-- Mission of God + Four Fields overview -->
+  <section class="section overview" id="mission">
+    <div class="container overview__grid">
+      <div class="overview__item">
+        <img class="overview__graphic" src={mission.image} alt="" width="500" height="190" loading="lazy" />
+        <h2 class="overview__title">{mission.title}</h2>
+        <p class="overview__desc muted">{mission.description}</p>
+        <ResourceLinks items={mission.items} />
+      </div>
+      <div class="overview__item" id="four-fields">
+        <img class="overview__graphic overview__graphic--square" src={fourFields.image} alt="The Four Fields diagram: entry, gospel, discipleship, church, with leaders in the center" width="220" height="220" loading="lazy" />
+        <h2 class="overview__title">{fourFields.title}</h2>
+        <p class="overview__desc muted">{fourFields.description}</p>
+        <ResourceLinks items={fourFields.items} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Numbered fields -->
+  <section class="fields theme-ink" id="fields">
+    <div class="container">
+      <p class="eyebrow eyebrow--rule">The pattern</p>
+      <h2 class="section-title">Five parts of kingdom growth</h2>
+      <ol class="fields__list">
+        {
+          fields.map((g) => (
+            <li class="field-row" id={g.key}>
+              <div class="field-row__head">
+                <span class="field-row__num" aria-hidden="true">{g.number}.</span>
+                <div>
+                  <h3 class="field-row__title">{g.title}</h3>
+                  <p class="field-row__tagline">{g.tagline}</p>
+                </div>
+              </div>
+              <div class="field-row__links">
+                <ResourceLinks items={g.items} />
+              </div>
+              <img class="field-row__icon" src={g.icon} alt="" width="120" height="120" loading="lazy" />
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- X. Develop: Head / Heart / Hands -->
+  <section class="section develop" id="develop">
+    <div class="container develop__grid">
+      <div class="develop__intro">
+        <img class="develop__icon" src={develop.icon} alt="" width="120" height="120" loading="lazy" />
+        <p class="eyebrow eyebrow--rule">{develop.number}. {develop.title}</p>
+        <h2>Head, heart & hands</h2>
+        <p class="lead">{develop.tagline}</p>
+        <p class="muted small">Studies and teaching shared from Sent Ones. Open each area to browse.</p>
+      </div>
+      <div class="develop__groups">
+        {
+          develop.subgroups?.map((sg, i) => (
+            <details class="hhh" open={i === 0 ? true : undefined}>
+              <summary class="hhh__summary">
+                <span class="hhh__title">{sg.title}</span>
+                <span class="hhh__count">{sg.items.length} resources</span>
+                <span class="accordion__icon hhh__icon" aria-hidden="true" />
+              </summary>
+              <div class="hhh__body">
+                <ResourceLinks items={sg.items} compact />
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <InquiryForm id="questions" />
+</BaseLayout>
+
+<style>
+  .coaching__note {
+    margin: 0;
+  }
+  .coach__title {
+    font-size: var(--fs-h3);
+    color: var(--c-yellow);
+  }
+  .dmc {
+    padding-block: var(--section);
+  }
+  .dmc__grid {
+    display: grid;
+    gap: var(--space-7);
+    align-items: center;
+  }
+  @media (min-width: 64em) {
+    .dmc__grid {
+      grid-template-columns: 1.4fr 1fr;
+      gap: var(--space-8);
+    }
+  }
+  .dmc__title {
+    font-size: var(--fs-h1);
+  }
+  .dmc .lead {
+    max-width: 36rem;
+  }
+  .dmc__logo {
+    width: min(20rem, 70%);
+    margin-inline: auto;
+    filter: invert(1);
+    mix-blend-mode: screen;
+  }
+  .overview__grid {
+    display: grid;
+    gap: var(--space-8);
+  }
+  @media (min-width: 64em) {
+    .overview__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .overview__graphic {
+    width: 16rem;
+    margin-bottom: var(--space-4);
+  }
+  .overview__graphic--square {
+    width: 11rem;
+  }
+  .overview__title {
+    font-size: var(--fs-h2);
+    color: var(--c-orange);
+  }
+  .overview__desc {
+    max-width: 34rem;
+  }
+  .fields {
+    padding-block: var(--section);
+  }
+  .fields__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .field-row {
+    display: grid;
+    gap: var(--space-4) var(--space-6);
+    padding-block: var(--space-6);
+    border-bottom: 1px solid var(--rule);
+    align-items: start;
+  }
+  @media (min-width: 48em) {
+    .field-row {
+      grid-template-columns: 1.1fr 1.3fr auto;
+    }
+  }
+  .field-row__head {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+  }
+  .field-row__num {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    line-height: 0.9;
+    color: var(--c-orange);
+  }
+  .field-row__title {
+    font-size: var(--fs-h2);
+    color: var(--c-orange);
+    margin-bottom: 0.25rem;
+  }
+  .field-row__tagline {
+    margin: 0;
+    font-weight: 500;
+  }
+  .field-row__icon {
+    width: 6rem;
+    height: 6rem;
+    object-fit: contain;
+    justify-self: end;
+    display: none;
+  }
+  @media (min-width: 48em) {
+    .field-row__icon {
+      display: block;
+    }
+  }
+  .develop__grid {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 64em) {
+    .develop__grid {
+      grid-template-columns: 1fr 1.5fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+  }
+  .develop__icon {
+    width: 6rem;
+    margin-bottom: var(--space-4);
+  }
+  .hhh {
+    border-bottom: 1px solid var(--rule);
+  }
+  .hhh:first-child {
+    border-top: 1px solid var(--rule);
+  }
+  .hhh__summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: 1.1rem 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .hhh__summary::-webkit-details-marker {
+    display: none;
+  }
+  .hhh__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--c-yellow);
+  }
+  .hhh__count {
+    margin-left: auto;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .hhh__icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+  }
+  .hhh__icon::before,
+  .hhh__icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.8rem;
+    height: 2px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+  }
+  .hhh__icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  details[open] .hhh__icon::after {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+  .hhh__body {
+    padding-bottom: var(--space-5);
+  }
+</style>

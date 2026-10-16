@@ -1,0 +1,82 @@
+---
+/**
+ * Client-side filter chips. Filters sibling elements inside `target` by a data attribute.
+ * Markup works without JS (everything shown); JS adds filtering and updates the URL hash.
+ */
+interface Option {
+  value: string;
+  label: string;
+}
+interface Props {
+  label: string;
+  options: Option[];
+  /** CSS selector for the container whose children carry `data-<attr>` */
+  target: string;
+  attr: string;
+  allLabel?: string;
+  /** When true, the attribute holds a pipe-separated list (categories). */
+  multi?: boolean;
+  emptyMessage?: string;
+}
+const { label, options, target, attr, allLabel = 'All', multi = false, emptyMessage = 'Nothing matches that filter yet.' } = Astro.props;
+---
+
+<div class="filters" role="group" aria-label={label} data-filter data-target={target} data-attr={attr} data-multi={multi ? 'true' : 'false'}>
+  <button class="chip" type="button" aria-pressed="true" data-filter-value="">{allLabel}</button>
+  {options.map((o) => <button class="chip" type="button" aria-pressed="false" data-filter-value={o.value}>{o.label}</button>)}
+  <p class="filters__empty notice" hidden data-filter-empty>{emptyMessage}</p>
+  <p class="visually-hidden" aria-live="polite" data-filter-live></p>
+</div>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+  .filters__empty {
+    flex-basis: 100%;
+    margin: var(--space-4) 0 0;
+  }
+  .filters__empty[hidden] {
+    display: none;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-filter]').forEach((group) => {
+    const targetSel = group.dataset.target!;
+    const attr = group.dataset.attr!;
+    const multi = group.dataset.multi === 'true';
+    const chips = Array.from(group.querySelectorAll<HTMLButtonElement>('[data-filter-value]'));
+    const empty = group.querySelector<HTMLElement>('[data-filter-empty]');
+    const live = group.querySelector<HTMLElement>('[data-filter-live]');
+    const param = `filter-${attr}`;
+
+    function apply(value: string, updateUrl = true) {
+      const items = document.querySelectorAll<HTMLElement>(`${targetSel} [data-${attr}]`);
+      let shown = 0;
+      items.forEach((item) => {
+        const raw = item.dataset[attr.replace(/-([a-z])/g, (_, c) => c.toUpperCase())] ?? '';
+        const match = !value || (multi ? raw.split('|').includes(value) : raw === value);
+        item.hidden = !match;
+        if (match) shown++;
+      });
+      chips.forEach((c) => c.setAttribute('aria-pressed', String((c.dataset.filterValue ?? '') === value)));
+      if (empty) empty.hidden = shown > 0;
+      if (live) live.textContent = `${shown} item${shown === 1 ? '' : 's'} shown`;
+      if (updateUrl) {
+        const url = new URL(location.href);
+        if (value) url.searchParams.set(param, value);
+        else url.searchParams.delete(param);
+        history.replaceState(null, '', url);
+      }
+    }
+
+    chips.forEach((chip) => chip.addEventListener('click', () => apply(chip.dataset.filterValue ?? '')));
+
+    const initial = new URL(location.href).searchParams.get(param);
+    if (initial && chips.some((c) => c.dataset.filterValue === initial)) apply(initial, false);
+  });
+</script>

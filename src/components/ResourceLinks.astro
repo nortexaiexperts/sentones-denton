@@ -1,0 +1,106 @@
+---
+import type { ResourceItem } from '../lib/types';
+
+interface Props {
+  items: ResourceItem[];
+  compact?: boolean;
+}
+const { items, compact = false } = Astro.props;
+const formatLabel: Record<ResourceItem['format'], string> = {
+  video: 'Video',
+  document: 'Document',
+  playlist: 'Playlist',
+  guide: 'Guide',
+  graphic: 'Graphic',
+  coaching: 'Coaching',
+};
+---
+
+<ul class:list={['rlist', { 'rlist--compact': compact }]}>
+  {
+    items.map((item) => (
+      <li class="rlist__item">
+        <div class="rlist__head">
+          <span class="rlist__title">{item.title}</span>
+          <span class="rlist__format">{formatLabel[item.format]}</span>
+        </div>
+        {item.description && <p class="rlist__desc muted small">{item.description}</p>}
+        <div class="rlist__links">
+          {item.links.map((l) => (
+            <a class="rlist__link" href={l.href} target={l.external ? '_blank' : undefined} rel={l.external ? 'noopener' : undefined}>
+              {l.label}
+              {l.external && <span class="visually-hidden"> (opens in a new tab)</span>}
+            </a>
+          ))}
+        </div>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .rlist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .rlist--compact {
+    gap: 0;
+  }
+  .rlist__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .rlist--compact .rlist__item {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.7rem 0;
+  }
+  .rlist__item:last-child {
+    border-bottom: 0;
+  }
+  .rlist__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .rlist__title {
+    font-weight: 700;
+  }
+  .rlist__format {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .rlist__desc {
+    margin: 0;
+  }
+  .rlist__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+  }
+  .rlist__link {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+  .rlist__link:hover {
+    color: var(--c-yellow);
+  }
+</style>

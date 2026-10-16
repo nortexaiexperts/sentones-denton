@@ -1,0 +1,238 @@
+---
+/**
+ * Inquiry form (Formspree-ready). In this preview phase no Formspree ID is configured, so the
+ * form validates locally and then explains that submissions are not enabled yet. Nothing is
+ * sent anywhere. When PUBLIC_FORMSPREE_INQUIRY_ID exists, it posts to Formspree and only
+ * reports success on a confirmed 2xx response.
+ */
+interface Props {
+  id?: string;
+  title?: string;
+  intro?: string;
+  topics?: string[];
+  defaultTopic?: string;
+  tone?: 'dark' | 'ink' | 'light';
+}
+const {
+  id = 'questions',
+  title = 'Got questions?',
+  intro = "Want a further explanation of anything? Let's connect to answer your questions and explore next steps.",
+  topics = ['General question', 'Discovery call', 'Coaching call', 'Missions Training Center', 'Deployment opportunities', 'Events & trainings', 'Resources'],
+  defaultTopic = 'General question',
+  tone = 'ink',
+} = Astro.props;
+
+const formspreeId = import.meta.env.PUBLIC_FORMSPREE_INQUIRY_ID ?? '';
+const endpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` : '';
+const themeClass = tone === 'light' ? 'theme-light' : tone === 'dark' ? 'theme-dark' : 'theme-ink';
+---
+
+<section class:list={['inquiry', themeClass]} id={id} aria-labelledby={`${id}-title`}>
+  <div class="container inquiry__grid">
+    <div class="inquiry__copy">
+      <h2 id={`${id}-title`}>{title}</h2>
+      <p class="lead">{intro}</p>
+      <slot name="aside" />
+    </div>
+
+    <form class="inquiry__form" data-inquiry-form action={endpoint || undefined} method="POST" novalidate data-endpoint={endpoint}>
+      {
+        !endpoint && (
+          <p class="notice notice--yellow inquiry__preview-note">
+            <strong>Preview:</strong> submissions are not enabled yet. You can fill the form to see validation, but nothing is
+            sent.
+          </p>
+        )
+      }
+      <div class="inquiry__row">
+        <div class="field">
+          <label for={`${id}-first`}>First name</label>
+          <input id={`${id}-first`} name="firstName" type="text" autocomplete="given-name" required />
+          <p class="field__error" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label for={`${id}-last`}>Last name</label>
+          <input id={`${id}-last`} name="lastName" type="text" autocomplete="family-name" required />
+          <p class="field__error" aria-live="polite"></p>
+        </div>
+      </div>
+      <div class="field">
+        <label for={`${id}-email`}>Email address</label>
+        <input id={`${id}-email`} name="email" type="email" autocomplete="email" inputmode="email" required />
+        <p class="field__error" aria-live="polite"></p>
+      </div>
+      <div class="field">
+        <label for={`${id}-topic`}>What is this about?</label>
+        <select id={`${id}-topic`} name="topic">
+          {topics.map((t) => <option value={t} selected={t === defaultTopic}>{t}</option>)}
+        </select>
+        <p class="field__error" aria-live="polite"></p>
+      </div>
+      <div class="field">
+        <label for={`${id}-message`}>Message</label>
+        <textarea id={`${id}-message`} name="message" required minlength="10"></textarea>
+        <p class="field__error" aria-live="polite"></p>
+      </div>
+      <!-- Honeypot: hidden from people, filled by bots. Formspree ignores submissions with this set. -->
+      <div class="inquiry__hp" aria-hidden="true">
+        <label for={`${id}-gotcha`}>Leave this field empty</label>
+        <input id={`${id}-gotcha`} name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+      <div class="inquiry__actions">
+        <button class="btn btn--yellow" type="submit" data-submit>Send message</button>
+        <p class="small muted">We will not share or sell your information.</p>
+      </div>
+      <p class="inquiry__status notice" role="status" aria-live="polite" hidden data-status></p>
+    </form>
+  </div>
+</section>
+
+<style>
+  .inquiry {
+    padding-block: var(--section);
+  }
+  .inquiry__grid {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 64em) {
+    .inquiry__grid {
+      grid-template-columns: 1fr 1.2fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+  }
+  .inquiry__copy .lead {
+    max-width: 30rem;
+  }
+  .inquiry__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-width: 40rem;
+  }
+  .inquiry__row {
+    display: grid;
+    gap: var(--space-4);
+  }
+  @media (min-width: 40em) {
+    .inquiry__row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .inquiry__hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .inquiry__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-2);
+  }
+  .inquiry__actions p {
+    margin: 0;
+  }
+  .inquiry__status[hidden] {
+    display: none;
+  }
+  .inquiry__status.is-success {
+    border-left-color: var(--c-yellow);
+  }
+  .inquiry__status.is-error {
+    border-left-color: var(--c-orange-dark);
+  }
+</style>
+
+<script>
+  const forms = document.querySelectorAll<HTMLFormElement>('[data-inquiry-form]');
+
+  const messages: Record<string, string> = {
+    firstName: 'Please enter your first name.',
+    lastName: 'Please enter your last name.',
+    email: 'Please enter a valid email address.',
+    message: 'Please write a short message (at least 10 characters).',
+  };
+
+  function validateField(input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement): boolean {
+    const field = input.closest('.field');
+    const error = field?.querySelector<HTMLElement>('.field__error');
+    const valid = input.checkValidity();
+    field?.classList.toggle('is-invalid', !valid);
+    input.setAttribute('aria-invalid', String(!valid));
+    if (error) error.textContent = valid ? '' : (messages[input.name] ?? 'Please check this field.');
+    return valid;
+  }
+
+  forms.forEach((form) => {
+    const status = form.querySelector<HTMLElement>('[data-status]');
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]');
+    const endpoint = form.dataset.endpoint ?? '';
+    const fields = Array.from(
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('input:not([name="_gotcha"]), textarea, select'),
+    );
+
+    fields.forEach((f) => {
+      f.addEventListener('blur', () => validateField(f));
+      f.addEventListener('input', () => {
+        if (f.getAttribute('aria-invalid') === 'true') validateField(f);
+      });
+    });
+
+    function show(text: string, kind: 'success' | 'error' | 'info') {
+      if (!status) return;
+      status.textContent = text;
+      status.hidden = false;
+      status.classList.toggle('is-success', kind === 'success');
+      status.classList.toggle('is-error', kind === 'error');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const results = fields.map(validateField);
+      if (results.includes(false)) {
+        fields.find((f) => f.getAttribute('aria-invalid') === 'true')?.focus();
+        show('Please fix the highlighted fields and try again.', 'error');
+        return;
+      }
+
+      if (!endpoint) {
+        // Preview mode: never pretend a message was sent.
+        show(
+          'This preview does not send messages yet. Once the inquiry inbox is connected, this form will deliver your message to the Denton team.',
+          'info',
+        );
+        return;
+      }
+
+      if (submit) {
+        submit.disabled = true;
+        submit.textContent = 'Sending…';
+      }
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        if (res.ok) {
+          form.reset();
+          show('Thanks, your message is on its way. Someone from the Denton team will reply soon.', 'success');
+        } else {
+          show('Sorry, something went wrong and your message was not sent. Please try again in a moment.', 'error');
+        }
+      } catch {
+        show('Sorry, we could not reach the form service. Please check your connection and try again.', 'error');
+      } finally {
+        if (submit) {
+          submit.disabled = false;
+          submit.textContent = 'Send message';
+        }
+      }
+    });
+  });
+</script>

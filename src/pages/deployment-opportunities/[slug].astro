@@ -1,0 +1,254 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Photo from '../../components/Photo.astro';
+import SampleBadge from '../../components/SampleBadge.astro';
+import OpportunityCard from '../../components/OpportunityCard.astro';
+import { getOpportunities } from '../../lib/content';
+import type { Opportunity } from '../../lib/types';
+
+export function getStaticPaths() {
+  return getOpportunities().map((opportunity) => ({ params: { slug: opportunity.slug }, props: { opportunity } }));
+}
+
+const { opportunity: o } = Astro.props as { opportunity: Opportunity };
+const scopeLabel = { local: 'Local', regional: 'Regional', international: 'International' }[o.scope];
+const availabilityLabel = { open: 'Open', upcoming: 'Upcoming', closed: 'Closed' }[o.availability];
+const availabilityClass = { open: 'badge--yellow', upcoming: 'badge--orange', closed: 'badge--outline' }[o.availability];
+const others = getOpportunities()
+  .filter((x) => x.slug !== o.slug && x.availability !== 'closed')
+  .slice(0, 2);
+---
+
+<BaseLayout title={o.title} description={o.overview} article noindex={o.status === 'demo'}>
+  <article class="opp">
+    <header class="opp__header">
+      <div class="container">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a><span aria-hidden="true">/</span><a href="/deployment-opportunities/">Deployment opportunities</a>
+        </nav>
+        <div class="opp__badges">
+          <span class="badge">{scopeLabel}</span>
+          <span class:list={['badge', availabilityClass]}>{availabilityLabel}</span>
+          <SampleBadge status={o.status} />
+        </div>
+        <h1 class="opp__title">{o.title}</h1>
+        <p class="opp__region">{o.region}</p>
+      </div>
+    </header>
+
+    <div class="container opp__layout">
+      <div class="opp__main">
+        <div class="opp__media">
+          <Photo image={o.image} widths={[640, 960, 1280]} sizes="(min-width: 64em) 60vw, 100vw" priority />
+        </div>
+        <div class="prose">
+          <p class="lead">{o.overview}</p>
+          {
+            o.purpose.length > 0 && (
+              <>
+                <h2>Purpose</h2>
+                <ul>{o.purpose.map((p) => <li>{p}</li>)}</ul>
+              </>
+            )
+          }
+          {
+            o.requirements.length > 0 && (
+              <>
+                <h2>Requirements</h2>
+                <ul>{o.requirements.map((p) => <li>{p}</li>)}</ul>
+              </>
+            )
+          }
+          {
+            o.preparation.length > 0 && (
+              <>
+                <h2>Preparation</h2>
+                <ul>{o.preparation.map((p) => <li>{p}</li>)}</ul>
+              </>
+            )
+          }
+        </div>
+      </div>
+
+      <aside class="opp__aside">
+        <div class="opp__details">
+          <h2 class="opp__details-title">At a glance</h2>
+          <dl>
+            <dt>Scope</dt>
+            <dd>{scopeLabel}</dd>
+            <dt>Status</dt>
+            <dd>{availabilityLabel}</dd>
+            {o.dates && (
+              <>
+                <dt>Dates</dt>
+                <dd>{o.dates}</dd>
+              </>
+            )}
+            {o.duration && (
+              <>
+                <dt>Duration</dt>
+                <dd>{o.duration}</dd>
+              </>
+            )}
+            {o.partner && (
+              <>
+                <dt>Partner</dt>
+                <dd>{o.partner}</dd>
+              </>
+            )}
+            {o.cost && (
+              <>
+                <dt>Cost</dt>
+                <dd>{o.cost}</dd>
+              </>
+            )}
+          </dl>
+          {
+            o.availability === 'closed' ? (
+              <p class="muted small">This opportunity is closed. Browse current opportunities or ask about the next one.</p>
+            ) : o.apply ? (
+              <a class="btn btn--yellow opp__cta" href={o.apply.href} target={o.apply.external ? '_blank' : undefined} rel={o.apply.external ? 'noopener' : undefined}>
+                {o.apply.label}
+              </a>
+            ) : (
+              <a class="btn btn--yellow opp__cta" href="/resources/#questions">
+                Ask about this opportunity
+              </a>
+            )
+          }
+          {o.status === 'demo' && <p class="small muted opp__note">Sample opportunity for layout review. No partner, dates or costs are confirmed.</p>}
+        </div>
+        <a class="link link--arrow" href="/deployment-opportunities/">All opportunities</a>
+      </aside>
+    </div>
+
+    {
+      others.length > 0 && (
+        <section class="section opp__more">
+          <div class="container">
+            <div class="section-head">
+              <h2>Other opportunities</h2>
+              <a class="link link--arrow" href="/deployment-opportunities/">View all</a>
+            </div>
+            <div class="grid-2">
+              {others.map((x) => (
+                <OpportunityCard opportunity={x} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .opp__header {
+    padding-block: clamp(2.5rem, 6vw, 5rem) var(--space-6);
+    border-bottom: 3px solid var(--c-orange);
+  }
+  .crumbs {
+    display: flex;
+    gap: 0.6rem;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: var(--space-5);
+  }
+  .crumbs a {
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    color: var(--c-yellow);
+  }
+  .opp__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  .opp__title {
+    font-size: var(--fs-display);
+    max-width: 18ch;
+    margin-bottom: var(--space-3);
+  }
+  .opp__region {
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--c-orange);
+  }
+  .opp__layout {
+    display: grid;
+    gap: var(--space-7);
+    padding-block: var(--section-sm);
+  }
+  @media (min-width: 64em) {
+    .opp__layout {
+      grid-template-columns: 1.6fr 1fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+  }
+  .opp__media {
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: var(--space-6);
+    aspect-ratio: 16 / 9;
+    background: var(--c-grey-800);
+  }
+  .opp__media :global(picture),
+  .opp__media :global(img) {
+    width: 100%;
+    height: 100%;
+  }
+  .opp__media :global(img) {
+    object-fit: cover;
+  }
+  .opp__aside {
+    position: sticky;
+    top: calc(var(--header-h) + 1rem);
+  }
+  .opp__details {
+    --accent-text: var(--c-orange-ink);
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: var(--space-5);
+    margin-bottom: var(--space-5);
+  }
+  .opp__details-title {
+    font-size: var(--fs-h4);
+    color: var(--c-orange);
+  }
+  .opp__details dl {
+    margin: 0 0 var(--space-5);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.6rem 1.25rem;
+    font-size: var(--fs-small);
+  }
+  .opp__details dt {
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    padding-top: 0.2em;
+  }
+  .opp__details dd {
+    margin: 0;
+  }
+  .opp__cta {
+    width: 100%;
+  }
+  .opp__note {
+    margin: var(--space-3) 0 0;
+  }
+  .opp__more {
+    border-top: 1px solid var(--rule);
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+import type { Post } from '../lib/types';
+import { formatLongDate } from '../lib/format';
+import Photo from './Photo.astro';
+import SampleBadge from './SampleBadge.astro';
+
+interface Props {
+  post: Post;
+  featured?: boolean;
+}
+const { post, featured = false } = Astro.props;
+const href = `/blog/${post.slug}/`;
+---
+
+<article class:list={['post card card--link', { 'post--featured': featured }]}>
+  <div class="card__media">
+    <Photo image={post.image} widths={[400, 640, 960, 1280]} sizes={featured ? '(min-width: 64em) 60vw, 100vw' : '(min-width: 64em) 33vw, (min-width: 48em) 50vw, 100vw'} />
+  </div>
+  <div class="card__body">
+    <div class="post__meta">
+      <time class="meta meta--muted" datetime={post.date}>{formatLongDate(post.date, 'UTC')}</time>
+      <SampleBadge status={post.status} />
+    </div>
+    <h3 class="card__title"><a href={href}>{post.title}</a></h3>
+    <p class="post__excerpt muted">{post.excerpt}</p>
+    <div class="card__footer post__footer">
+      <ul class="post__cats" aria-label="Categories">
+        {post.categories.map((c) => <li>{c}</li>)}
+      </ul>
+      <span class="link link--arrow">Read</span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .post__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .post__excerpt {
+    margin: 0;
+    font-size: var(--fs-small);
+  }
+  .post--featured .card__title {
+    font-size: var(--fs-h3);
+  }
+  .post--featured .post__excerpt {
+    font-size: var(--fs-body);
+  }
+  .post__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .post__cats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .post__cats li {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+  }
+  .post__cats li + li::before {
+    content: '· ';
+    color: var(--text-muted);
+  }
+  @media (min-width: 64em) {
+    .post--featured {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+    }
+    .post--featured .card__media {
+      aspect-ratio: auto;
+      min-height: 22rem;
+    }
+    .post--featured .card__body {
+      padding: var(--space-7);
+      justify-content: center;
+    }
+  }
+</style>

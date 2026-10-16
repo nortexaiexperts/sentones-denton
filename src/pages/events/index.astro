@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import PillarStrip from '../../components/PillarStrip.astro';
+import EventCard from '../../components/EventCard.astro';
+import FilterChips from '../../components/FilterChips.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getPastEvents, getUpcomingEvents } from '../../lib/content';
+
+const upcoming = getUpcomingEvents();
+const past = getPastEvents().slice(0, 6);
+---
+
+<BaseLayout
+  title="Events"
+  description="Upcoming disciple-making trainings and worship gatherings hosted by Sent Ones Denton in Denton, Texas."
+>
+  <Hero
+    image={{ src: 'gathering-worship', alt: 'A crowded room of people worshipping with raised hands' }}
+    kicker="Develop your skills"
+    headline="Trainings & *worship* in Denton"
+    lead="Practical disciple-making trainings and worship gatherings designed to equip everyday believers to engage the lost, share the gospel, make disciples, form healthy churches, and develop multiplying leaders."
+    size="page"
+  />
+  <PillarStrip />
+
+  <section class="section" id="upcoming">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow eyebrow--rule">What's next</p>
+          <h2>Upcoming events</h2>
+        </div>
+        <p class="muted small events__tz">All times are Central Time (America/Chicago).</p>
+      </div>
+
+      {
+        upcoming.length > 0 ? (
+          <>
+            <FilterChips
+              label="Filter events by type"
+              attr="event-type"
+              target="#event-list"
+              options={[
+                { value: 'training', label: 'Training' },
+                { value: 'worship', label: 'Worship' },
+              ]}
+              emptyMessage="No upcoming events of that type yet. Check back soon or browse the other type."
+            />
+            <div id="event-list" class="events__list">
+              {upcoming.map((e) => (
+                <EventCard event={e} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <EmptyState
+            title="No confirmed events yet"
+            body="Denton trainings and worship nights will appear here as soon as dates are confirmed. Until then, start with the free training resources or tell us you are interested."
+            cta={{ label: 'Browse training resources', href: '/resources/' }}
+          />
+        )
+      }
+    </div>
+  </section>
+
+  {
+    past.length > 0 && (
+      <section class="section section--flush-top">
+        <div class="container">
+          <details class="past">
+            <summary class="past__summary">
+              <span class="past__title">Past events</span>
+              <span class="badge badge--outline">{past.length}</span>
+            </summary>
+            <div class="events__list events__list--past">
+              {past.map((e) => (
+                <EventCard event={e} past />
+              ))}
+            </div>
+          </details>
+        </div>
+      </section>
+    )
+  }
+
+  <CtaBand
+    title="Want to bring a training to your church or group?"
+    body="We would love to talk about hosting a Gospel Training or a worship night with your community in Denton or North Texas."
+    primary={{ label: 'Ask about hosting', href: '/resources/#questions' }}
+    secondary={{ label: 'Training resources', href: '/resources/' }}
+    tone="yellow"
+  />
+</BaseLayout>
+
+<style>
+  .events__tz {
+    margin: 0;
+  }
+  .events__list {
+    border-bottom: 2px solid var(--c-orange);
+  }
+  .events__list--past {
+    border-bottom-color: var(--rule);
+  }
+  .past__summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    cursor: pointer;
+    list-style: none;
+    padding: var(--space-5) 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .past__summary::-webkit-details-marker {
+    display: none;
+  }
+  .past__summary::after {
+    content: 'Show';
+    margin-left: auto;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    color: var(--c-orange);
+  }
+  details[open] .past__summary::after {
+    content: 'Hide';
+  }
+  .past__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+</style>

@@ -1,0 +1,103 @@
+---
+/**
+ * Native <details> accordion. Keyboard accessible by default; only one item open at a time
+ * when `exclusive` is set (progressive enhancement).
+ */
+interface Item {
+  title: string;
+  body: string | string[];
+}
+interface Props {
+  items: Item[];
+  exclusive?: boolean;
+  name?: string;
+  /** Use large display headings (brand "WE ARE…" style). */
+  display?: boolean;
+}
+const { items, exclusive = true, name = 'accordion', display = false } = Astro.props;
+---
+
+<div class:list={['accordion', { 'accordion--display': display }]} data-accordion data-exclusive={exclusive ? 'true' : 'false'}>
+  {
+    items.map((item, i) => (
+      <details class="accordion__item" name={exclusive ? name : undefined} open={i === 0 && display ? true : undefined}>
+        <summary class="accordion__summary">
+          <span class="accordion__title">{item.title}</span>
+          <span class="accordion__icon" aria-hidden="true" />
+        </summary>
+        <div class="accordion__body">
+          {Array.isArray(item.body) ? item.body.map((p) => <p>{p}</p>) : <p>{item.body}</p>}
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .accordion {
+    border-top: 1px solid var(--rule);
+  }
+  .accordion__item {
+    border-bottom: 1px solid var(--rule);
+  }
+  .accordion__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: 1.1rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 700;
+    font-size: 1.0625rem;
+  }
+  .accordion__summary::-webkit-details-marker {
+    display: none;
+  }
+  .accordion__summary:hover .accordion__title {
+    color: var(--accent-text);
+  }
+  .accordion--display .accordion__summary {
+    padding: 1.25rem 0;
+  }
+  .accordion--display .accordion__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--fs-h3);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .accordion__icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+  }
+  .accordion__icon::before,
+  .accordion__icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.8rem;
+    height: 2px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+    transition: transform 0.25s var(--ease);
+  }
+  .accordion__icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  details[open] .accordion__icon::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  .accordion__body {
+    padding: 0 0 1.4rem;
+    max-width: 48rem;
+  }
+  .accordion__body p:last-child {
+    margin-bottom: 0;
+  }
+</style>

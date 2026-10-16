@@ -1,0 +1,53 @@
+---
+import type { Opportunity } from '../lib/types';
+import Photo from './Photo.astro';
+import SampleBadge from './SampleBadge.astro';
+
+interface Props {
+  opportunity: Opportunity;
+}
+const { opportunity: o } = Astro.props;
+const href = `/deployment-opportunities/${o.slug}/`;
+const scopeLabel = { local: 'Local', regional: 'Regional', international: 'International' }[o.scope];
+const availabilityLabel = { open: 'Open', upcoming: 'Upcoming', closed: 'Closed' }[o.availability];
+const availabilityClass = { open: 'badge--yellow', upcoming: 'badge--orange', closed: 'badge--outline' }[o.availability];
+---
+
+<article class:list={['opp card card--link', { 'opp--closed': o.availability === 'closed' }]} data-scope={o.scope} data-availability={o.availability}>
+  <div class="card__media">
+    <Photo image={o.image} widths={[400, 640, 960]} sizes="(min-width: 48em) 50vw, 100vw" />
+  </div>
+  <div class="card__body">
+    <div class="opp__meta">
+      <span class="badge">{scopeLabel}</span>
+      <span class:list={['badge', availabilityClass]}>{availabilityLabel}</span>
+      <SampleBadge status={o.status} />
+    </div>
+    <h3 class="card__title"><a href={href}>{o.title}</a></h3>
+    <p class="meta">{o.region}{o.dates ? ` · ${o.dates}` : ''}</p>
+    <p class="opp__overview muted">{o.overview}</p>
+    <div class="card__footer">
+      <span class="link link--arrow">View opportunity</span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .opp__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .opp__overview {
+    margin: 0;
+  }
+  .opp--closed .card__media :global(img) {
+    filter: grayscale(0.7);
+  }
+  .opp .card__title {
+    font-size: var(--fs-h3);
+  }
+  .opp .card__title a:hover {
+    color: var(--c-yellow);
+  }
+</style>

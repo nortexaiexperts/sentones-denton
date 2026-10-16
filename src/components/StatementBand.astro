@@ -1,0 +1,65 @@
+---
+/**
+ * Full-width statement block. "orange" = scripture band (white Bebas on orange),
+ * "yellow" = quote block (black Bebas on yellow), "black" = big yellow statement on black.
+ */
+interface Props {
+  text: string;
+  attribution?: string;
+  tone?: 'orange' | 'yellow' | 'black';
+  size?: 'lg' | 'md';
+  quote?: boolean;
+}
+const { text, attribution, tone = 'orange', size = 'lg', quote = true } = Astro.props;
+const themeClass = tone === 'orange' ? 'theme-orange' : tone === 'yellow' ? 'theme-yellow' : 'theme-dark';
+---
+
+<section class:list={['band', `band--${tone}`, `band--${size}`, themeClass]}>
+  <div class="container">
+    <blockquote class="band__quote">
+      <p class="band__text">{quote ? `“${text}”` : text}</p>
+      {attribution && <footer class="band__attr">{attribution}</footer>}
+    </blockquote>
+  </div>
+</section>
+
+<style>
+  .band {
+    padding-block: clamp(3.5rem, 7vw, 6.5rem);
+  }
+  .band__quote {
+    margin: 0;
+  }
+  .band__text {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    line-height: 0.95;
+    margin: 0;
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+  .band--lg .band__text {
+    font-size: var(--fs-h1);
+  }
+  .band--md .band__text {
+    font-size: var(--fs-h2);
+    max-width: 34ch;
+  }
+  .band--black .band__text {
+    color: var(--c-yellow);
+  }
+  /* Brand pattern: large white Bebas on orange (passes the 3:1 large-text threshold); attribution stays black. */
+  .band--orange .band__text {
+    color: var(--c-white);
+  }
+  .band__attr {
+    margin-top: var(--space-4);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+  }
+  .band--black .band__attr {
+    color: var(--c-orange);
+  }
+</style>

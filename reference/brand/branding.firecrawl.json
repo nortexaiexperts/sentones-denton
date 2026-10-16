@@ -1,0 +1,112 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Montserrat",
+      "role": "body"
+    },
+    {
+      "family": "Bebas Neue",
+      "role": "heading"
+    }
+  ],
+  "colors": {
+    "primary": "#F95203",
+    "secondary": "#FB5401",
+    "accent": "#F95103",
+    "background": "#FFFFFF",
+    "textPrimary": "#000000",
+    "link": "#F95103"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Montserrat",
+      "heading": "Bebas Neue"
+    },
+    "fontStacks": {
+      "heading": [
+        "Bebas Neue",
+        "serif"
+      ],
+      "body": [
+        "Montserrat",
+        "serif"
+      ],
+      "paragraph": [
+        "Montserrat",
+        "serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "144px",
+      "h2": "150px",
+      "body": "11px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "3px"
+  },
+  "components": {
+    "input": {
+      "background": "#FFFFFF",
+      "textColor": "#000000",
+      "borderColor": null,
+      "borderRadius": "50px",
+      "borderRadiusCorners": {
+        "topLeft": "50px",
+        "topRight": "50px",
+        "bottomRight": "50px",
+        "bottomLeft": "50px"
+      },
+      "shadow": "none"
+    },
+    "buttonPrimary": {
+      "background": "#F95203",
+      "textColor": "#FFFFFF",
+      "borderRadius": "25px",
+      "borderRadiusCorners": {
+        "topLeft": "25px",
+        "topRight": "25px",
+        "bottomRight": "25px",
+        "bottomLeft": "25px"
+      },
+      "shadow": "none"
+    },
+    "buttonSecondary": {
+      "background": "#FB5401",
+      "textColor": "#000000",
+      "borderRadius": "50px",
+      "borderRadiusCorners": {
+        "topLeft": "50px",
+        "topRight": "50px",
+        "bottomRight": "50px",
+        "bottomLeft": "50px"
+      },
+      "shadow": "rgba(0, 0, 0, 0.15) 0px 3px 12px 0px"
+    }
+  },
+  "images": {
+    "logo": "https://www.sentones.com/wp-content/uploads/2025/02/sent-ones-white-logo.png",
+    "favicon": "https://www.sentones.com/wp-content/uploads/2025/04/favicon.png",
+    "ogImage": "https://www.sentones.com/wp-content/uploads/2025/02/image-asset-1030x687.jpeg",
+    "logoHref": "https://www.sentones.com/",
+    "logoAlt": "sent-ones-white-logo"
+  },
+  "personality": {
+    "tone": "bold",
+    "energy": "high",
+    "targetAudience": "job seekers"
+  },
+  "designSystem": {
+    "framework": "custom",
+    "componentLibrary": ""
+  },
+  "confidence": {
+    "buttons": 0.71,
+    "colors": 0.5833333333333334,
+    "overall": 0.6466666666666667
+  },
+  "brandName": "Sent Ones",
+  "logo": "https://www.sentones.com/wp-content/uploads/2025/02/sent-ones-white-logo.png"
+}

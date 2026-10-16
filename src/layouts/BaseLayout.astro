@@ -1,0 +1,91 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getSiteSettings } from '../lib/content';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Absolute or site-relative path to a sharing image. */
+  image?: string;
+  /** Set when the page is an article (affects og:type). */
+  article?: boolean;
+  /** Force noindex (e.g. sample routes). */
+  noindex?: boolean;
+  bodyClass?: string;
+}
+
+const site = getSiteSettings();
+const { title, description = site.description, image = '/og-default.jpg', article = false, noindex = false, bodyClass = '' } =
+  Astro.props;
+
+const fullTitle = title === site.name ? `${site.name} · ${site.tagline}` : `${title} · ${site.name}`;
+
+// Canonical / absolute URLs only once the client confirms a domain.
+const siteUrlConfirmed = Boolean(import.meta.env.PUBLIC_SITE_URL);
+const canonical = siteUrlConfirmed ? new URL(Astro.url.pathname, Astro.site).toString() : null;
+const ogImage = siteUrlConfirmed ? new URL(image, Astro.site).toString() : image;
+
+// Staging/preview builds are never indexed. Only an explicit production flag allows it.
+const allowIndexing = import.meta.env.PUBLIC_ALLOW_INDEXING === 'true' && !noindex;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta name="robots" content={allowIndexing ? 'index, follow' : 'noindex, nofollow'} />
+    <meta name="theme-color" content="#000000" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:image" content={ogImage} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" href="/fonts/BebasNeue-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/Montserrat-variable-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background: var(--c-yellow);
+    color: var(--c-black);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.8rem;
+    border-radius: 0 0 var(--radius) var(--radius);
+    text-decoration: none;
+  }
+  .skip-link:focus {
+    top: 0;
+  }
+  main:focus {
+    outline: none;
+  }
+</style>

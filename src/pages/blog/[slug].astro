@@ -1,0 +1,319 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Photo from '../../components/Photo.astro';
+import SampleBadge from '../../components/SampleBadge.astro';
+import SocialIcon from '../../components/SocialIcon.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { getAdjacentPosts, getPost, getPosts, getSiteSettings } from '../../lib/content';
+import { formatLongDate, readingTime } from '../../lib/format';
+
+export function getStaticPaths() {
+  return getPosts().map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const post = getPost(slug!);
+if (!post) return Astro.redirect('/404/');
+
+const site = getSiteSettings();
+const { previous, next } = getAdjacentPosts(post.slug);
+const related = getPosts()
+  .filter((p) => p.slug !== post.slug && p.categories.some((c) => post.categories.includes(c)))
+  .slice(0, 3);
+const shareUrl = import.meta.env.PUBLIC_SITE_URL ? new URL(Astro.url.pathname, Astro.site).toString() : '';
+const encodedUrl = encodeURIComponent(shareUrl);
+const encodedTitle = encodeURIComponent(post.title);
+---
+
+<BaseLayout
+  title={post.seo.title ?? post.title}
+  description={post.seo.description ?? post.excerpt}
+  article
+  noindex={post.status === 'demo'}
+>
+  <article class="article">
+    <header class="article__header">
+      <div class="container container--narrow">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a><span aria-hidden="true">/</span><a href="/blog/">Blog</a>
+          <span aria-hidden="true">/</span><span>{post.categories[0]}</span>
+        </nav>
+        <SampleBadge status={post.status} label="Sample article" />
+        <h1 class="article__title">{post.title}</h1>
+        <p class="article__meta">
+          <time datetime={post.date}>{formatLongDate(post.date, 'UTC')}</time>
+          <span aria-hidden="true">·</span>
+          <span>in {post.categories.join(', ')}</span>
+          <span aria-hidden="true">·</span>
+          <span>by {post.author.name}</span>
+          <span aria-hidden="true">·</span>
+          <span>{readingTime(post.body)}</span>
+        </p>
+      </div>
+    </header>
+
+    <figure class="article__figure">
+      <div class="container">
+        <Photo image={post.image} widths={[768, 1024, 1280]} sizes="(min-width: 80em) 74rem, 100vw" priority />
+      </div>
+      {post.image.credit && <figcaption class="container muted small">{post.image.credit}</figcaption>}
+    </figure>
+
+    <div class="container container--narrow article__body">
+      <div class="prose" set:html={post.bodyHtml} />
+
+      <aside class="author">
+        <div class="author__avatar" aria-hidden="true">{post.author.name.charAt(0)}</div>
+        <div>
+          <p class="author__name">About {post.author.name}</p>
+          {post.author.role && <p class="author__role">{post.author.role}</p>}
+          <p class="author__bio muted">{post.author.bio}</p>
+        </div>
+      </aside>
+
+      <p class="disclaimer small muted">
+        <strong>Disclaimer.</strong> {site.disclaimer}
+      </p>
+
+      <div class="share">
+        <span class="share__label">Share this article</span>
+        <ul class="share__list">
+          <li>
+            <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} target="_blank" rel="noopener" aria-label="Share on Facebook">
+              <SocialIcon network="facebook" size={16} />
+            </a>
+          </li>
+          <li>
+            <a href={`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`} target="_blank" rel="noopener" aria-label="Share on X">
+              <SocialIcon network="x" size={16} />
+            </a>
+          </li>
+          <li>
+            <a href={`mailto:?subject=${encodedTitle}&body=${encodedUrl}`} aria-label="Share by email">
+              <SocialIcon network="email" size={16} />
+            </a>
+          </li>
+        </ul>
+        {!shareUrl && <span class="small muted">Links will carry the final address once the domain is confirmed.</span>}
+      </div>
+
+      <nav class="pager" aria-label="Previous and next articles">
+        {
+          previous ? (
+            <a class="pager__link" href={`/blog/${previous.slug}/`} rel="prev">
+              <span class="pager__dir">← Older</span>
+              <span class="pager__title">{previous.title}</span>
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        {
+          next && (
+            <a class="pager__link pager__link--next" href={`/blog/${next.slug}/`} rel="next">
+              <span class="pager__dir">Newer →</span>
+              <span class="pager__title">{next.title}</span>
+            </a>
+          )
+        }
+      </nav>
+      <p><a class="link link--arrow" href="/blog/">Back to all articles</a></p>
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="section related theme-ink">
+          <div class="container">
+            <div class="section-head">
+              <h2>Related articles</h2>
+              <a class="link link--arrow" href="/blog/">All articles</a>
+            </div>
+            <div class="grid-3">
+              {related.map((p) => (
+                <BlogCard post={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .article__header {
+    padding-block: clamp(2.5rem, 6vw, 5rem) var(--space-6);
+    text-align: center;
+  }
+  .crumbs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: var(--space-5);
+  }
+  .crumbs a {
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    color: var(--c-yellow);
+  }
+  .article__title {
+    font-size: var(--fs-display);
+    color: var(--c-orange);
+    margin: var(--space-4) auto var(--space-4);
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  .article__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .article__figure {
+    margin: 0 0 var(--space-7);
+  }
+  .article__figure :global(img) {
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+  .article__figure figcaption {
+    margin-top: var(--space-2);
+  }
+  .article__body {
+    padding-bottom: var(--section);
+  }
+  .article__body .prose {
+    margin-inline: auto;
+  }
+  .author {
+    --accent-text: var(--c-orange-ink);
+    display: flex;
+    gap: var(--space-5);
+    align-items: flex-start;
+    margin-top: var(--space-8);
+    padding: var(--space-5);
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+  }
+  .author__avatar {
+    flex-shrink: 0;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--c-orange);
+    color: var(--c-black);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+  }
+  .author__name {
+    font-weight: 700;
+    margin-bottom: 0.1rem;
+  }
+  .author__role {
+    margin-bottom: 0.4rem;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+  }
+  .author__bio {
+    margin: 0;
+    font-size: var(--fs-small);
+  }
+  .disclaimer {
+    margin: var(--space-6) 0;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--rule);
+  }
+  .share {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-7);
+  }
+  .share__label {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    text-transform: uppercase;
+  }
+  .share__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: var(--space-2);
+  }
+  .share__list a {
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid var(--rule);
+    color: var(--c-white);
+  }
+  .share__list a:hover {
+    background: var(--c-orange);
+    border-color: var(--c-orange);
+    color: var(--c-black);
+  }
+  .pager {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--rule);
+  }
+  @media (min-width: 48em) {
+    .pager {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .pager__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-decoration: none;
+  }
+  .pager__link--next {
+    text-align: right;
+  }
+  .pager__dir {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-orange);
+  }
+  .pager__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .pager__link:hover .pager__title {
+    color: var(--c-yellow);
+  }
+</style>

@@ -1,0 +1,140 @@
+---
+/**
+ * Full-bleed photographic hero with dark overlay.
+ *  - size "full" for the homepage, "page" for inner pages.
+ *  - headline supports *emphasis* which renders yellow.
+ */
+import type { ImageRef } from '../lib/types';
+import Photo from './Photo.astro';
+
+interface Props {
+  image: ImageRef;
+  kicker?: string;
+  headline: string;
+  lead?: string;
+  size?: 'full' | 'page' | 'short';
+  align?: 'left' | 'center';
+  headingLevel?: 'h1' | 'p';
+  /** Optional sample badge slot. */
+}
+
+const { image, kicker, headline, lead, size = 'page', align = 'left', headingLevel = 'h1' } = Astro.props;
+
+// "*Lost people matter,* and so…" → [{text, em}]
+const parts = headline.split(/(\*[^*]+\*)/g).filter(Boolean).map((seg) =>
+  seg.startsWith('*') ? { text: seg.slice(1, -1), em: true } : { text: seg, em: false },
+);
+const Heading = headingLevel;
+---
+
+<section class:list={['hero', `hero--${size}`, `hero--${align}`]}>
+  <div class="hero__media" aria-hidden="true">
+    <Photo image={image} widths={[640, 1024, 1440, 1920]} sizes="100vw" priority class="hero__img" />
+  </div>
+  <div class="hero__overlay" aria-hidden="true"></div>
+  <div class="container container--wide hero__content">
+    {kicker && <p class="eyebrow eyebrow--rule hero__kicker">{kicker}</p>}
+    <Heading class="hero__headline">
+      {parts.map((p) => (p.em ? <span class="highlight">{p.text}</span> : p.text))}
+    </Heading>
+    {lead && <p class="hero__lead">{lead}</p>}
+    <slot name="badge" />
+    <div class="hero__actions"><slot /></div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    align-items: end;
+    isolation: isolate;
+    background: var(--c-black);
+    color: var(--c-white);
+    overflow: hidden;
+  }
+  .hero--full {
+    min-height: clamp(34rem, 88vh, 54rem);
+  }
+  .hero--page {
+    min-height: clamp(24rem, 58vh, 36rem);
+  }
+  .hero--short {
+    min-height: clamp(18rem, 42vh, 26rem);
+  }
+  .hero__media,
+  .hero__media :global(picture),
+  .hero__media :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .hero__media :global(img) {
+    object-fit: cover;
+    object-position: center 35%;
+  }
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 40%, rgba(0, 0, 0, 0.82) 100%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 70%);
+  }
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    padding-block: clamp(3rem, 8vw, 6rem) clamp(3rem, 7vw, 5.5rem);
+  }
+  .hero--center .hero__content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero__kicker {
+    color: var(--c-yellow);
+  }
+  .hero__headline {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-transform: uppercase;
+    line-height: 0.9;
+    letter-spacing: 0.005em;
+    margin: 0 0 var(--space-5);
+    max-width: 14ch;
+    text-wrap: balance;
+    color: var(--c-white);
+  }
+  .hero--full .hero__headline {
+    font-size: var(--fs-display);
+    max-width: 12ch;
+  }
+  .hero--page .hero__headline,
+  .hero--short .hero__headline {
+    font-size: var(--fs-h1);
+    max-width: 18ch;
+  }
+  .hero--center .hero__headline {
+    max-width: 20ch;
+  }
+  .hero__lead {
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    font-weight: 500;
+    max-width: 38rem;
+    margin: 0 0 var(--space-6);
+    text-wrap: pretty;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-4);
+  }
+  .hero__actions:empty {
+    display: none;
+  }
+  .hero--center .hero__actions {
+    justify-content: center;
+  }
+</style>

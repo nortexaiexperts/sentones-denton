@@ -1,0 +1,275 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PillarStrip from '../components/PillarStrip.astro';
+import VideoEmbed from '../components/VideoEmbed.astro';
+import Photo from '../components/Photo.astro';
+import FilterChips from '../components/FilterChips.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { getMedia, getSiteSettings } from '../lib/content';
+import SocialIcon from '../components/SocialIcon.astro';
+
+const site = getSiteSettings();
+const media = getMedia();
+const documentary = media.find((m) => m.type === 'documentary');
+const podcasts = media.filter((m) => m.type === 'podcast');
+const videos = media.filter((m) => m.type === 'video' || m.type === 'playlist');
+const typeLabel = { video: 'Video', podcast: 'Podcast', playlist: 'Playlist', documentary: 'Documentary' };
+const iconFor = (label: string) =>
+  label.toLowerCase().includes('spotify') ? 'spotify' : label.toLowerCase().includes('apple') ? 'apple-podcasts' : 'link';
+---
+
+<BaseLayout
+  title="Media"
+  description="Videos, podcasts and the Sent Ones documentary: stories and biblical insight to help you discover your calling, develop your skills and deploy to your mission."
+>
+  <PageHeader
+    kicker="Watch & listen"
+    title="Media"
+    lead="Stories from the field and teaching from faithful workers. Everything here is shared from the wider Sent Ones family; Denton recordings will be added as they are produced."
+  />
+  <PillarStrip />
+
+  {
+    documentary && (
+      <section class="section doc" id={documentary.slug}>
+        <div class="container doc__grid">
+          <div class="doc__copy">
+            <p class="eyebrow eyebrow--rule">Featured · {typeLabel[documentary.type]}</p>
+            <h2 class="doc__title">{documentary.title}</h2>
+            <p class="lead">{documentary.summary}</p>
+            <p class="muted small">{documentary.provider}</p>
+            <div class="btn-row">
+              {documentary.links.map((l) => (
+                <a class="link link--arrow" href={l.href} target="_blank" rel="noopener">
+                  {l.label}
+                </a>
+              ))}
+            </div>
+          </div>
+          <VideoEmbed title={documentary.title} youtubeId={documentary.youtubeId} poster={documentary.cover} />
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section section--flush-top" id="library">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow eyebrow--rule">Library</p>
+          <h2>Podcasts, videos & playlists</h2>
+        </div>
+      </div>
+      <FilterChips
+        label="Filter media by type"
+        attr="media-type"
+        target="#media-list"
+        options={[
+          { value: 'podcast', label: 'Podcasts' },
+          { value: 'video', label: 'Videos' },
+          { value: 'playlist', label: 'Playlists' },
+        ]}
+      />
+      <div id="media-list" class="media-list">
+        {
+          podcasts.map((p) => (
+            <article class="show" data-media-type="podcast" id={p.slug}>
+              <div class="show__cover">
+                <Photo image={p.cover} widths={[320, 480, 640]} sizes="(min-width: 48em) 18rem, 60vw" />
+              </div>
+              <div class="show__body">
+                <p class="eyebrow">{typeLabel[p.type]}</p>
+                <h3 class="show__title">{p.title}</h3>
+                <p class="show__summary">{p.summary}</p>
+                <ul class="show__links">
+                  {p.links.map((l) => (
+                    <li>
+                      <a class="btn btn--yellow btn--sm btn--pill" href={l.href} target="_blank" rel="noopener">
+                        <SocialIcon network={iconFor(l.label)} size={14} />
+                        {l.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))
+        }
+        {
+          videos.map((v) => (
+            <article class="show show--video" data-media-type={v.type} id={v.slug}>
+              <div class="show__video">
+                {v.youtubeId ? (
+                  <VideoEmbed title={v.title} youtubeId={v.youtubeId} poster={v.cover} />
+                ) : v.localVideo ? (
+                  <VideoEmbed title={v.title} src={v.localVideo.src} poster={{ src: v.localVideo.poster, alt: v.cover.alt }} />
+                ) : (
+                  <a class="show__cover show__cover--link" href={v.links[0]?.href} target="_blank" rel="noopener" aria-label={`${v.title} (opens in a new tab)`}>
+                    <Photo image={v.cover} widths={[480, 768, 1024]} sizes="(min-width: 64em) 40vw, 100vw" />
+                  </a>
+                )}
+              </div>
+              <div class="show__body">
+                <p class="eyebrow">{typeLabel[v.type]}</p>
+                <h3 class="show__title">{v.title}</h3>
+                <p class="show__summary">{v.summary}</p>
+                <p class="muted small">{v.provider}</p>
+                {v.links.length > 0 && (
+                  <ul class="show__links">
+                    {v.links.map((l) => (
+                      <li>
+                        <a class="link link--arrow" href={l.href} target="_blank" rel="noopener">
+                          {l.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="follow theme-ink section">
+    <div class="container follow__grid">
+      <div>
+        <h2 class="follow__title">Follow Sent Ones on all platforms…</h2>
+        <p class="muted">National Sent Ones channels. Denton accounts will be added when confirmed.</p>
+      </div>
+      <ul class="follow__icons">
+        {
+          site.nationalSocial.map((s) => (
+            <li>
+              <a href={s.href} target="_blank" rel="noopener" aria-label={`Sent Ones on ${s.label}`}>
+                <SocialIcon network={s.network} size={22} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Ready for more than listening?"
+    body="Take what you hear into practice at a Denton training, or talk through your next step with a coach."
+    primary={{ label: 'Upcoming events', href: '/events/' }}
+    secondary={{ label: 'Coaching', href: '/resources/#coaching' }}
+    tone="orange"
+  />
+</BaseLayout>
+
+<style>
+  .doc__grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+  @media (min-width: 64em) {
+    .doc__grid {
+      grid-template-columns: 1fr 1.4fr;
+      gap: var(--space-8);
+      align-items: center;
+    }
+  }
+  .doc__title {
+    font-size: var(--fs-h2);
+    color: var(--c-yellow);
+  }
+  .media-list {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .show {
+    --accent-text: var(--c-orange-ink);
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    align-items: center;
+  }
+  @media (min-width: 48em) {
+    .show {
+      grid-template-columns: 16rem 1fr;
+      gap: var(--space-7);
+    }
+    .show--video {
+      grid-template-columns: 1.3fr 1fr;
+    }
+  }
+  .show[hidden] {
+    display: none;
+  }
+  .show__cover {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--c-black);
+  }
+  .show__cover :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .show__cover--link {
+    aspect-ratio: 16 / 9;
+  }
+  .show__title {
+    font-size: var(--fs-h2);
+    color: var(--c-yellow);
+    margin-bottom: var(--space-3);
+  }
+  .show__summary {
+    font-weight: 600;
+    max-width: 40rem;
+  }
+  .show__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-4);
+  }
+  .follow__grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+  .follow__title {
+    font-size: var(--fs-h2);
+    margin-bottom: var(--space-2);
+  }
+  .follow__icons {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .follow__icons a {
+    display: inline-flex;
+    width: 3rem;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid var(--rule);
+    color: var(--c-white);
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .follow__icons a:hover {
+    background: var(--c-orange);
+    border-color: var(--c-orange);
+    color: var(--c-black);
+  }
+</style>

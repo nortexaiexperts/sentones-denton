@@ -1,0 +1,188 @@
+---
+import { getSiteSettings } from '../lib/content';
+import SocialIcon from './SocialIcon.astro';
+
+const site = getSiteSettings();
+const year = new Date().getFullYear();
+---
+
+<footer class="footer theme-light">
+  <div class="container container--wide footer__grid">
+    <div class="footer__brand">
+      <h2 class="footer__title">
+        Sent Ones <span class="footer__location">{site.locationLabel}</span>
+      </h2>
+      <p class="footer__tagline">{site.tagline}</p>
+      {
+        site.contactEmail ? (
+          <p class="footer__contact">
+            <a class="text-link" href={`mailto:${site.contactEmail}`}>
+              {site.contactEmail}
+            </a>
+            {site.contactPhone && (
+              <>
+                <br />
+                <a class="text-link" href={`tel:${site.contactPhone.replace(/[^+\d]/g, '')}`}>
+                  {site.contactPhone}
+                </a>
+              </>
+            )}
+          </p>
+        ) : (
+          <p class="footer__contact">
+            <a class="text-link" href="/resources/#questions">
+              Send us a message
+            </a>
+          </p>
+        )
+      }
+    </div>
+
+    <nav class="footer__nav" aria-label="Footer">
+      <h3 class="footer__heading">Explore</h3>
+      <ul>
+        <li><a href="/">Home</a></li>
+        {site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="footer__journey">
+      <h3 class="footer__heading">Your next step</h3>
+      <ul>
+        <li><a href="/resources/#coaching">Discover your calling</a></li>
+        <li><a href="/events/">Develop your skills</a></li>
+        <li><a href="/deployment-opportunities/">Deploy with purpose</a></li>
+        <li><a href="/mtc/">Missions Training Center</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__social">
+      <h3 class="footer__heading">Follow Sent Ones</h3>
+      <p class="footer__social-note">National channels, pending Denton accounts.</p>
+      <ul class="footer__icons">
+        {
+          site.nationalSocial.map((s) => (
+            <li>
+              <a href={s.href} target="_blank" rel="noopener" aria-label={`Sent Ones on ${s.label}`}>
+                <SocialIcon network={s.network} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="footer__social-note">
+        <a class="text-link" href={site.nationalSite.href} target="_blank" rel="noopener">{site.nationalSite.label}</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="container container--wide footer__bottom">
+    <p>© {year} Sent Ones Denton. All rights reserved.</p>
+    <p>{site.footerNote}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 6px solid var(--c-orange);
+    padding-block: var(--section-sm) var(--space-6);
+  }
+  .footer__grid {
+    display: grid;
+    gap: var(--space-7) var(--space-6);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 40em) {
+    .footer__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64em) {
+    .footer__grid {
+      grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+    }
+  }
+  .footer__title {
+    font-size: var(--fs-h3);
+    color: var(--c-orange-deep);
+    margin-bottom: var(--space-3);
+  }
+  .footer__location {
+    color: var(--c-black);
+  }
+  .footer__tagline {
+    font-weight: 600;
+    max-width: 24rem;
+    margin-bottom: var(--space-4);
+  }
+  .footer__contact {
+    font-weight: 600;
+    margin: 0;
+  }
+  .footer__heading {
+    font-size: 1.5rem;
+    color: var(--c-orange-deep);
+    margin-bottom: var(--space-3);
+  }
+  .footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer__nav li,
+  .footer__journey li {
+    margin-bottom: 0.4rem;
+  }
+  .footer__nav a,
+  .footer__journey a {
+    text-decoration: none;
+    font-weight: 600;
+    font-size: var(--fs-small);
+  }
+  .footer__nav a:hover,
+  .footer__journey a:hover {
+    color: var(--c-orange-deep);
+    text-decoration: underline;
+  }
+  .footer__icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: var(--space-3) 0 !important;
+  }
+  .footer__icons a {
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--c-orange-deep);
+    border: 1.5px solid var(--c-grey-200);
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .footer__icons a:hover {
+    background: var(--c-orange);
+    color: var(--c-black);
+    border-color: var(--c-orange);
+  }
+  .footer__social-note {
+    font-size: var(--fs-xs);
+    color: var(--c-grey-600);
+    margin: 0;
+  }
+  .footer__bottom {
+    margin-top: var(--space-7);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--c-grey-200);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-6);
+    font-size: var(--fs-xs);
+    color: var(--c-grey-600);
+  }
+  .footer__bottom p {
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,151 @@
+---
+/**
+ * Click-to-load media. Shows a poster + play button; nothing is downloaded until the
+ * visitor activates it. Supports a YouTube ID (privacy-enhanced embed) or a self-hosted file.
+ */
+import type { ImageRef } from '../lib/types';
+import Photo from './Photo.astro';
+
+interface Props {
+  title: string;
+  poster: ImageRef;
+  youtubeId?: string;
+  src?: string;
+  duration?: string;
+  class?: string;
+}
+const { title, poster, youtubeId, src, duration, class: className = '' } = Astro.props;
+const kind = youtubeId ? 'youtube' : 'file';
+---
+
+<div class:list={['video', className]} data-video data-kind={kind} data-youtube={youtubeId} data-src={src} data-title={title}>
+  <div class="video__poster" data-video-poster>
+    <Photo image={poster} widths={[640, 960, 1280]} sizes="(min-width: 64em) 60vw, 100vw" class="video__img" />
+    <button class="video__play" type="button" data-video-play>
+      <span class="video__play-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>
+      </span>
+      <span class="video__play-label">
+        Play <span class="visually-hidden">video:</span> {title}
+        {duration && <span class="video__duration">{duration}</span>}
+      </span>
+    </button>
+  </div>
+  <div class="video__frame" data-video-frame hidden></div>
+</div>
+
+<style>
+  .video {
+    position: relative;
+    background: var(--c-black);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .video__poster {
+    position: relative;
+    aspect-ratio: 16 / 9;
+  }
+  .video__poster :global(picture),
+  .video__poster :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .video__play {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.6));
+    border: 0;
+    color: var(--c-white);
+    cursor: pointer;
+    padding: var(--space-5);
+    text-align: center;
+  }
+  .video__play:hover .video__play-icon {
+    background: var(--c-yellow);
+    transform: scale(1.06);
+  }
+  .video__play-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: var(--c-orange);
+    color: var(--c-black);
+    transition: transform 0.25s var(--ease), background-color 0.25s var(--ease);
+  }
+  .video__play-icon svg {
+    margin-left: 3px;
+  }
+  .video__play-label {
+    font-weight: 700;
+    font-size: var(--fs-xs);
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  }
+  .video__duration {
+    margin-left: 0.5rem;
+    opacity: 0.8;
+  }
+  .video__frame {
+    aspect-ratio: 16 / 9;
+  }
+  .video__frame[hidden] {
+    display: none;
+  }
+  .video__frame :global(iframe),
+  .video__frame :global(video) {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: 0;
+    background: #000;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-video]').forEach((box) => {
+    const playBtn = box.querySelector<HTMLButtonElement>('[data-video-play]');
+    const poster = box.querySelector<HTMLElement>('[data-video-poster]');
+    const frame = box.querySelector<HTMLElement>('[data-video-frame]');
+    if (!playBtn || !poster || !frame) return;
+
+    playBtn.addEventListener('click', () => {
+      const kind = box.dataset.kind;
+      const title = box.dataset.title ?? 'Video';
+      if (kind === 'youtube' && box.dataset.youtube) {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${box.dataset.youtube}?autoplay=1&rel=0`;
+        iframe.title = title;
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        frame.replaceChildren(iframe);
+      } else if (box.dataset.src) {
+        const video = document.createElement('video');
+        video.src = box.dataset.src;
+        video.controls = true;
+        video.preload = 'metadata';
+        video.playsInline = true;
+        video.setAttribute('aria-label', title);
+        frame.replaceChildren(video);
+        // Visitor clicked play, so start playback. Audio is only ever user-initiated.
+        video.play().catch(() => {});
+      }
+      poster.hidden = true;
+      frame.hidden = false;
+      (frame.firstElementChild as HTMLElement | null)?.focus();
+    });
+  });
+</script>
