@@ -257,6 +257,23 @@ export const mtc: MtcProgram = {
     },
   ],
   apply: { label: 'Ask about enrollment', href: '#mtc-inquiry' },
+  // Client decision 2026-10-17: flyer and booklet as downloads (not Drive links). Files supplied by Jeremy Adams.
+  downloads: [
+    {
+      label: 'Program flyer',
+      description: 'One-page overview: what to expect, requirements and how to get in touch.',
+      href: '/downloads/missions-training-center-flyer.pdf',
+      format: 'PDF',
+      size: '0.5 MB',
+    },
+    {
+      label: 'Program booklet',
+      description: 'Full program details: overview, admission requirements, duration and targeted outcomes.',
+      href: '/downloads/missions-training-center-booklet.pdf',
+      format: 'PDF',
+      size: '0.2 MB · 4 pages',
+    },
+  ],
   contactNote: 'Have a question about the MTC or want to enroll? Send us a note and a Denton practitioner will reach out.',
   image: {
     src: 'city-street-portrait',

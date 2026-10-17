@@ -187,6 +187,45 @@ const facts = [
     </div>
   </section>
 
+  <!-- Downloads -->
+  {
+    mtc.downloads.length > 0 && (
+      <section class="section theme-ink" id="downloads">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow eyebrow--rule">Take it with you</p>
+              <h2>Downloads</h2>
+            </div>
+            <p class="muted small dl__note">Share these with your church, family or sending team.</p>
+          </div>
+          <ul class="dl">
+            {mtc.downloads.map((d) => (
+              <li>
+                <a class="dl__card" href={d.href} download>
+                  <span class="dl__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 3v12m0 0l-4-4m4 4l4-4" />
+                      <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+                    </svg>
+                  </span>
+                  <span class="dl__text">
+                    <span class="dl__label">{d.label}</span>
+                    <span class="dl__desc">{d.description}</span>
+                    <span class="dl__meta">
+                      {d.format}
+                      {d.size && ` · ${d.size}`} · Download
+                    </span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
   <!-- FAQs -->
   <section class="section" id="faqs">
     <div class="container container--narrow">
@@ -376,5 +415,71 @@ const facts = [
   .faq__title {
     font-size: var(--fs-h1);
     color: var(--c-yellow);
+  }
+  .dl__note {
+    margin: 0;
+  }
+  .dl {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 48em) {
+    .dl {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .dl__card {
+    --accent-text: var(--c-orange-ink);
+    display: flex;
+    gap: var(--space-5);
+    align-items: flex-start;
+    padding: var(--space-5);
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+    height: 100%;
+  }
+  .dl__card:hover {
+    border-color: var(--c-yellow);
+    transform: translateY(-2px);
+  }
+  .dl__icon {
+    flex-shrink: 0;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--c-yellow);
+    color: var(--c-black);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dl__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .dl__label {
+    font-family: var(--font-display);
+    font-size: var(--fs-h4);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .dl__desc {
+    color: var(--text-muted);
+    font-size: var(--fs-small);
+  }
+  .dl__meta {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-text);
   }
 </style>

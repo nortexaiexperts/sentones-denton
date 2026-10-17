@@ -154,6 +154,8 @@ export interface MtcProgram {
   financialSupport: string | null;
   faqs: { question: string; answer: string }[];
   apply: Link | null;
+  /** Files visitors can download (flyer, booklet). Hosted in public/downloads. */
+  downloads: { label: string; description: string; href: string; format: string; size?: string }[];
   contactNote: string;
   image: ImageRef;
   status: ContentStatus;
