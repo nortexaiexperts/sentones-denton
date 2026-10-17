@@ -8,9 +8,51 @@
  * Each record is marked status: 'demo' and renders with a visible "Sample" badge.
  * Replace with confirmed Denton content in seed.ts (or Sanity) and delete as you go.
  */
-import type { Author, Event, MtcProgram, Opportunity, Post } from '../lib/types';
+import type { Author, Event, MtcProgram, Opportunity, Post, Rhythm } from '../lib/types';
 
 const credit = 'Frame from the Sent Ones trailer';
+
+/** Standing rhythms: the client named "Denton County Strategy Meeting" as an example. Schedule details are placeholders. */
+export const demoRhythms: Rhythm[] = [
+  {
+    slug: 'denton-county-strategy-meeting',
+    title: 'Denton County Strategy Meeting',
+    cadence: 'Every other Tuesday',
+    time: '7:00 – 8:30 PM',
+    venue: { name: 'Location shared on request', city: 'Denton, TX', online: false },
+    description:
+      'Practitioners and church leaders across Denton County gather to pray, share what God is doing in the harvest, and coordinate next steps toward every neighborhood and people group being reached.',
+    audience: 'Church leaders and movement practitioners',
+    cta: { label: 'Ask to join', href: '/resources/#questions' },
+    published: true,
+    status: 'demo',
+  },
+  {
+    slug: 'weekly-harvest-push',
+    title: 'Weekly Harvest Push',
+    cadence: 'Every Saturday morning',
+    time: '9:00 – 11:30 AM',
+    venue: { name: 'Meeting point shared on request', city: 'Denton, TX', online: false },
+    description:
+      'Two hours in the field together: prayer walking, gospel conversations, and following up with people of peace in Denton neighborhoods and on campus.',
+    audience: 'Open to anyone who has attended a Gospel Conversations Training',
+    cta: { label: 'Ask to join', href: '/resources/#questions' },
+    published: true,
+    status: 'demo',
+  },
+  {
+    slug: 'abiding-and-intercession',
+    title: 'Abiding & Intercession Hour',
+    cadence: 'Every Thursday',
+    time: '6:30 – 7:30 AM',
+    venue: { name: 'Online (Zoom)', city: 'Online', online: true },
+    description: 'An early hour of Scripture, silence and intercession for Denton, for workers being sent, and for the unreached.',
+    audience: 'Open to all',
+    cta: null,
+    published: true,
+    status: 'demo',
+  },
+];
 
 export const demoEvents: Event[] = [
   {
@@ -77,9 +119,29 @@ export const demoEvents: Event[] = [
     status: 'demo',
   },
   {
+    slug: 'north-texas-harvest-weekend',
+    title: 'North Texas Harvest Weekend',
+    type: 'harvest',
+    start: '2026-12-12T09:00:00-06:00',
+    end: '2026-12-13T16:00:00-06:00',
+    timezone: 'America/Chicago',
+    venue: { name: 'Meeting point shared on registration', address: null, city: 'Denton, TX', online: false },
+    image: { src: 'walking-together', alt: 'A group of people walking together along a muddy street', credit },
+    summary: 'Two days of concentrated harvest work: prayer walking, gospel conversations and starting discovery groups across Denton County, with training and debrief each evening.',
+    description: [
+      'A harvest push gathers everyone who has been trained and sends them out together. We cover a different part of the county each day, share meals, and debrief what God did each evening.',
+      'Saturday and Sunday afternoon. Bring walking shoes and a friend who has been through a Gospel Conversations Training.',
+    ],
+    registration: { label: 'Register', href: '#', external: true },
+    cost: 'Free (sample)',
+    published: true,
+    featured: false,
+    status: 'demo',
+  },
+  {
     slug: 'dmc-info-night-january',
     title: 'Disciple Making Community: Winter Cohort Info Night',
-    type: 'training',
+    type: 'mobilization',
     start: '2027-01-14T19:30:00-06:00',
     end: '2027-01-14T20:30:00-06:00',
     timezone: 'America/Chicago',

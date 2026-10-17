@@ -3,34 +3,67 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import PillarStrip from '../../components/PillarStrip.astro';
 import EventCard from '../../components/EventCard.astro';
+import RhythmCard from '../../components/RhythmCard.astro';
 import FilterChips from '../../components/FilterChips.astro';
 import EmptyState from '../../components/EmptyState.astro';
 import CtaBand from '../../components/CtaBand.astro';
-import { getPastEvents, getUpcomingEvents } from '../../lib/content';
+import { getPastEvents, getRhythms, getUpcomingEvents } from '../../lib/content';
 
+const rhythms = getRhythms();
 const upcoming = getUpcomingEvents();
 const past = getPastEvents().slice(0, 6);
 ---
 
 <BaseLayout
-  title="Events"
-  description="Upcoming disciple-making trainings and worship gatherings hosted by Sent Ones Denton in Denton, Texas."
+  title="Rhythms & Events"
+  description="Standing rhythms and upcoming training, mobilization, and harvest events hosted by Sent Ones Denton in Denton, Texas."
 >
   <Hero
     image={{ src: 'gathering-worship', alt: 'A crowded room of people worshipping with raised hands' }}
     kicker="Develop your skills"
-    headline="Trainings & *worship* in Denton"
-    lead="Practical disciple-making trainings and worship gatherings designed to equip everyday believers to engage the lost, share the gospel, make disciples, form healthy churches, and develop multiplying leaders."
+    headline="Standing rhythms & *upcoming events* in Denton"
+    lead="Find training and worship mobilization events, harvest pushes, and various other rhythms and opportunities below, where you can connect and grow in movement principles and practices in community!"
     size="page"
-  />
+  >
+    <a class="btn btn--yellow" href="#rhythms">Standing rhythms</a>
+    <a class="btn btn--outline" href="#upcoming">Upcoming events</a>
+  </Hero>
   <PillarStrip />
+
+  <!-- Standing rhythms: recurring gatherings, pinned above the dated list -->
+  <section class="section rhythms theme-ink" id="rhythms">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow eyebrow--rule">Regular gatherings</p>
+          <h2>Standing rhythms</h2>
+        </div>
+        <p class="muted small events__tz">Weekly and monthly rhythms you can join any time.</p>
+      </div>
+      {
+        rhythms.length > 0 ? (
+          <div class="rhythms__grid">
+            {rhythms.map((r) => (
+              <RhythmCard rhythm={r} />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            title="Rhythms coming soon"
+            body="Regular Denton gatherings, like the Denton County Strategy Meeting, will be listed here with their schedule as soon as they are confirmed."
+            cta={{ label: 'Ask about joining', href: '/resources/#questions' }}
+          />
+        )
+      }
+    </div>
+  </section>
 
   <section class="section" id="upcoming">
     <div class="container">
       <div class="section-head">
         <div>
           <p class="eyebrow eyebrow--rule">What's next</p>
-          <h2>Upcoming events</h2>
+          <h2>Upcoming training, mobilization & harvest events</h2>
         </div>
         <p class="muted small events__tz">All times are Central Time (America/Chicago).</p>
       </div>
@@ -44,9 +77,11 @@ const past = getPastEvents().slice(0, 6);
               target="#event-list"
               options={[
                 { value: 'training', label: 'Training' },
+                { value: 'mobilization', label: 'Mobilization' },
+                { value: 'harvest', label: 'Harvest' },
                 { value: 'worship', label: 'Worship' },
               ]}
-              emptyMessage="No upcoming events of that type yet. Check back soon or browse the other type."
+              emptyMessage="No upcoming events of that type yet. Check back soon or browse another type."
             />
             <div id="event-list" class="events__list">
               {upcoming.map((e) => (
@@ -56,8 +91,8 @@ const past = getPastEvents().slice(0, 6);
           </>
         ) : (
           <EmptyState
-            title="No confirmed events yet"
-            body="Denton trainings and worship nights will appear here as soon as dates are confirmed. Until then, start with the free training resources or tell us you are interested."
+            title="No dated events scheduled yet"
+            body="Trainings, mobilization events and harvest pushes will appear here as soon as dates are confirmed. In the meantime, join one of the standing rhythms above or start with the free training resources."
             cta={{ label: 'Browse training resources', href: '/resources/' }}
           />
         )
@@ -87,7 +122,7 @@ const past = getPastEvents().slice(0, 6);
 
   <CtaBand
     title="Want to bring a training to your church or group?"
-    body="We would love to talk about hosting a Gospel Training or a worship night with your community in Denton or North Texas."
+    body="We would love to speak to you about hosting a Movement or Four Fields Vision Cast with your church leaders, or a Gospel Conversations Training to equip your church, or a Four Fields Intensive, or running a Disciple-Making or Missionary Residency, or even planning a Vision Trip to one of our international strategies in South Asia, the Middle East, or North Africa!"
     primary={{ label: 'Ask about hosting', href: '/resources/#questions' }}
     secondary={{ label: 'Training resources', href: '/resources/' }}
     tone="yellow"
@@ -97,6 +132,20 @@ const past = getPastEvents().slice(0, 6);
 <style>
   .events__tz {
     margin: 0;
+  }
+  .rhythms__grid {
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 48em) {
+    .rhythms__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64em) {
+    .rhythms__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
   .events__list {
     border-bottom: 2px solid var(--c-orange);

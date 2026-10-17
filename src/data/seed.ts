@@ -19,6 +19,7 @@ import type {
   Opportunity,
   Post,
   ResourceGroup,
+  Rhythm,
   SiteSettings,
 } from '../lib/types';
 
@@ -34,7 +35,7 @@ export const siteSettings: SiteSettings = {
   description:
     'Sent Ones Denton helps everyday believers in Denton, Texas discover their calling, develop disciple-making skills, and deploy to the mission field at home and abroad.',
   nav: [
-    { label: 'Events', href: '/events/' },
+    { label: 'Rhythms & Events', href: '/events/' },
     { label: 'MTC', href: '/mtc/' },
     { label: 'Deployment', href: '/deployment-opportunities/' },
     { label: 'Resources', href: '/resources/' },
@@ -663,8 +664,9 @@ export const media: MediaItem[] = [
   },
 ];
 
-/** No confirmed Denton events, opportunities or articles yet. Sample ones live in demo.ts. */
+/** No confirmed Denton events, rhythms, opportunities or articles yet. Sample ones live in demo.ts. */
 export const events: Event[] = [];
+export const rhythms: Rhythm[] = [];
 export const opportunities: Opportunity[] = [];
 export const authors: Author[] = [];
 export const posts: Post[] = [];

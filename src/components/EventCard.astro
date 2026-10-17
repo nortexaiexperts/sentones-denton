@@ -1,6 +1,7 @@
 ---
 import type { Event } from '../lib/types';
 import { dateParts, formatEventRange } from '../lib/format';
+import { eventTypeLabels } from '../lib/content';
 import Photo from './Photo.astro';
 import SampleBadge from './SampleBadge.astro';
 
@@ -12,7 +13,8 @@ interface Props {
 const { event, variant = 'row', past = false } = Astro.props;
 const { month, day } = dateParts(event.start, event.timezone);
 const when = formatEventRange(event.start, event.end, event.timezone);
-const typeLabel = event.type === 'training' ? 'Training' : 'Worship';
+const typeLabel = eventTypeLabels[event.type];
+const typeClass = event.type === 'worship' ? 'badge--yellow' : event.type === 'training' ? 'badge--orange' : 'badge--outline';
 const href = `/events/${event.slug}/`;
 ---
 
@@ -26,7 +28,7 @@ const href = `/events/${event.slug}/`;
   </a>
   <div class="event__body">
     <div class="event__meta">
-      <span class:list={['badge', event.type === 'training' ? 'badge--orange' : 'badge--yellow']}>{typeLabel}</span>
+      <span class:list={['badge', typeClass]}>{typeLabel}</span>
       {past && <span class="badge badge--outline">Past event</span>}
       <SampleBadge status={event.status} />
     </div>

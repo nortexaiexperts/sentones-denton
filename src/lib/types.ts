@@ -90,7 +90,21 @@ export interface Homepage {
   finalCta: { title: string; body: string; primary: Link; secondary: Link };
 }
 
-export type EventType = 'training' | 'worship';
+export type EventType = 'training' | 'worship' | 'mobilization' | 'harvest';
+
+/** A regularly scheduled gathering (e.g. a weekly strategy meeting). Not date-driven; stays listed until removed. */
+export interface Rhythm {
+  slug: string;
+  title: string;
+  cadence: string; // "Every Tuesday" / "First Saturday of the month"
+  time: string | null; // "7:00 – 8:30 PM"
+  venue: { name: string; city: string; online: boolean };
+  description: string;
+  audience: string | null; // "Open to all" / "Church leaders"
+  cta: Link | null;
+  published: boolean;
+  status: ContentStatus;
+}
 
 export interface Event {
   slug: string;
