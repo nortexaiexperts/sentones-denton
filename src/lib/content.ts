@@ -107,10 +107,10 @@ export function getMtc(): MtcProgram {
       duration: base.format.duration ?? duration ?? null,
       dates: base.format.dates ?? dates ?? null,
     },
-    accommodation: base.accommodation ?? accommodation,
-    cost: base.cost ?? cost,
-    financialSupport: base.financialSupport ?? financialSupport,
-    apply: base.apply ?? apply,
+    accommodation: base.accommodation ?? accommodation ?? null,
+    cost: base.cost ?? cost ?? null,
+    financialSupport: base.financialSupport ?? financialSupport ?? null,
+    apply: base.apply ?? apply ?? null,
   };
 }
 

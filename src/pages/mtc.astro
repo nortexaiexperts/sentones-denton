@@ -13,10 +13,10 @@ const sample = getMtcSampleFlags();
 const flag = (key: string) => (sample[key] ? 'demo' : 'confirmed') as 'demo' | 'confirmed';
 
 const facts = [
-  { key: 'dates', label: 'Dates', value: mtc.format.dates, fallback: 'Next cohort dates to be announced' },
+  { key: 'dates', label: 'Enrollment', value: mtc.format.dates, fallback: 'To be announced' },
   { key: 'duration', label: 'Duration', value: mtc.format.duration, fallback: 'To be announced' },
-  { key: 'location', label: 'Location', value: mtc.format.location, fallback: 'Denton, Texas' },
-  { key: 'cost', label: 'Cost', value: mtc.cost, fallback: 'To be announced' },
+  { key: 'location', label: 'Location', value: mtc.format.location, fallback: 'Denton, TX' },
+  { key: 'cost', label: 'Cost', value: mtc.cost, fallback: 'TBD' },
 ];
 ---
 
@@ -29,7 +29,7 @@ const facts = [
         </a>
       ) : (
         <a class="btn btn--yellow" href="#mtc-inquiry">
-          Ask about the next cohort
+          Ask about enrollment
         </a>
       )
     }
@@ -94,7 +94,7 @@ const facts = [
         }
       </div>
       <div class="rhythms">
-        <h3 class="rhythms__title">Weekly rhythm</h3>
+        <h3 class="rhythms__title">Time commitment</h3>
         <ul class="rhythms__list">
           {
             mtc.format.weeklyCommitment.map((r) => (

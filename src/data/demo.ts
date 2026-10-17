@@ -507,13 +507,12 @@ The most important part of a vision trip happens after you land. Debrief with yo
 ];
 
 /** Sample MTC details so the layout of confirmed-fact sections can be reviewed. */
-export const demoMtcFormat: Partial<MtcProgram['format']> & Pick<MtcProgram, 'accommodation' | 'cost' | 'financialSupport' | 'apply'> = {
-  residential: 'Residential cohort: participants live in shared housing in Denton for the length of the program.',
-  location: 'Denton, Texas · gathering location announced to applicants',
-  duration: '15 weeks, with the option to continue for an additional 15 weeks',
-  dates: 'Spring cohort: January – May 2027 (sample)',
-  accommodation: 'Shared housing and weekday evening meals are included for residential participants (sample).',
-  cost: '$1,200 for the 15-week cohort, including housing (sample)',
-  financialSupport: 'Partial scholarships are available for participants raising support (sample).',
-  apply: { label: 'Apply for the next cohort', href: '#', external: true },
+export const demoMtcFormat: Partial<MtcProgram['format']> &
+  Partial<Pick<MtcProgram, 'accommodation' | 'cost' | 'financialSupport' | 'apply'>> = {
+  // Dates, duration, location, cost and the enrollment link are now confirmed in seed.ts, so only
+  // the remaining unconfirmed facts carry sample values here.
+  residential: 'Residential program: participants live in Denton for the length of the residency.',
+  accommodation: 'Housing and meal arrangements will be confirmed with each resident (sample).',
+  financialSupport: 'Residents raise personal support; coaching is provided (sample).',
+  apply: null,
 };

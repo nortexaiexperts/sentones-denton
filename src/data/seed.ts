@@ -187,7 +187,7 @@ export const mtc: MtcProgram = {
   title: 'Missions Training Center',
   kicker: 'Residential missions training in Denton',
   intro:
-    'Learn to live the life of a missionary in a local context by participating in rhythms of activities that will prepare you for a lifetime of following Jesus’ pattern of ministry.',
+    'Learn to live the life of a missionary in a local context by participating in rhythms of activities that will prepare you for a lifetime of following Jesus’ and Paul’s patterns of ministry.',
   statement:
     'Local missionary practitioners will walk alongside you in a community of practice as you learn biblical principles and implement global best practices in Denton and North Texas. Participants are trained to share the gospel, make disciples, start churches, and train leaders to do all of the Great Commission, whether you plan to move overseas or live on mission at home.',
   audience: [
@@ -206,15 +206,11 @@ export const mtc: MtcProgram = {
   ],
   format: {
     residential: null,
-    location: null,
-    duration: null,
-    dates: null,
+    location: 'Denton, TX',
+    duration: '12–18 months, condition-based',
+    dates: 'Open enrollment',
     weeklyCommitment: [
-      { label: 'Cohort gathering', hours: '2–3 hrs / week', body: 'Encourage and equip one another in a community of practice.' },
-      { label: 'Harvest', hours: '2 hrs / week', body: 'Entry, gospel, and discipling a group or church in the harvest.' },
-      { label: 'Train', hours: '2 hrs / week', body: 'Train other Christians to do the same.' },
-      { label: 'Accountability', hours: '1–2 hrs / month', body: 'Honest check-ins with a coach and your cohort.' },
-      { label: 'Personal abiding', hours: '1 hr / day', body: 'Apart from Jesus we can do nothing.' },
+      { label: 'Time commitment', hours: 'Full-time', body: 'The commitment of a full-time managerial job.' },
     ],
   },
   focus: [
@@ -229,14 +225,14 @@ export const mtc: MtcProgram = {
   eligibility: [
     'A follower of Jesus with a learning posture, willing to be stretched.',
     'Excited about seeing disciples and churches started for the sake of reaching people for Jesus.',
-    'Able to commit to the weekly rhythms for the full length of the cohort.',
+    'Able to commit full-time for the length of the residency (12–18 months).',
   ],
   applicationSteps: [
     'Send an inquiry using the form below and tell us a little about your story.',
     'Have a conversation with a Denton practitioner about fit, timing and expectations.',
-    'Complete the application and confirm your place in the next cohort.',
+    'Complete the application, interview and references to finish enrollment.',
   ],
-  cost: null,
+  cost: 'TBD',
   financialSupport: null,
   faqs: [
     {
@@ -250,9 +246,8 @@ export const mtc: MtcProgram = {
         'No. Whether you plan to move overseas or live on mission in Denton, you will gain experience implementing a comprehensive strategy for the Great Commission.',
     },
     {
-      question: 'What is the weekly time commitment?',
-      answer:
-        'Roughly a cohort gathering (2–3 hours), harvest time (2 hours) and training others (2 hours) each week, plus monthly accountability and daily personal abiding.',
+      question: 'What is the time commitment?',
+      answer: 'The commitment of a full-time managerial job.',
     },
     {
       question: 'Who facilitates the training?',
@@ -260,8 +255,8 @@ export const mtc: MtcProgram = {
         'Local missionary practitioners with years of field experience. Facilitator details for Denton will be published once confirmed.',
     },
   ],
-  apply: null,
-  contactNote: 'Have a question about the MTC? Send us a note and a Denton practitioner will reach out.',
+  apply: { label: 'Ask about enrollment', href: '#mtc-inquiry' },
+  contactNote: 'Have a question about the MTC or want to enroll? Send us a note and a Denton practitioner will reach out.',
   image: {
     src: 'city-street-portrait',
     alt: 'A young man standing on a busy city street, looking toward the camera',
