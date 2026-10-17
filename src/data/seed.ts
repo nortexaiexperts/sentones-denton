@@ -127,11 +127,13 @@ export const homepage: Homepage = {
       },
     },
   ],
+  // Client (2026-10-16): keep the Sent Ones trailer here "for now". The Denton "Compelled" video lives on the Media page.
   video: {
-    title: 'Compelled',
-    description: 'The Sent Ones Denton video.',
-    youtubeId: 'mP3VcE5kCRY',
-    poster: 'https://i.ytimg.com/vi/mP3VcE5kCRY/maxresdefault.jpg',
+    title: 'Who are the Sent Ones?',
+    description: 'One minute on why we go, from the Sent Ones trailer.',
+    src: '/video/sent-ones-trailer-720.mp4',
+    poster: '/video/sent-ones-trailer-poster.jpg',
+    duration: '1:05',
   },
   mtcTeaser: {
     eyebrow: 'Missions Training Center',
