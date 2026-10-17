@@ -43,7 +43,7 @@ export const siteSettings: SiteSettings = {
     { label: 'Blog', href: '/blog/' },
   ],
   headerCta: { label: 'Start here', href: '/#next-step' },
-  contactEmail: null, // pending: public Denton contact email
+  contactEmail: 'info@sentonesdenton.org', // forwards to the ministry Gmail (Cloudflare Email Routing, set up 2026-10-17)
   contactPhone: null, // pending: public Denton phone (optional)
   nationalSite: { label: 'sentones.com', href: SENTONES, external: true },
   // Client rule (2026-10-16): only Denton's own channels. Supplied by the client on 2026-10-16.
