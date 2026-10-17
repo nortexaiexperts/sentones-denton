@@ -9,9 +9,7 @@ const isActive = (href: string) => (href === '/' ? current === '/' : current.sta
 <header class="site-header" data-header>
   <div class="site-header__inner container container--wide">
     <a class="brand" href="/" aria-label={`${site.name} home`}>
-      <img class="brand__wordmark" src="/brand/sent-ones-wordmark-white.png" width="340" height="156" alt="Sent Ones" />
-      <span class="brand__divider" aria-hidden="true"></span>
-      <span class="brand__location">{site.locationLabel}</span>
+      <img class="brand__logo" src="/brand/sent-ones-denton-white.png" width="1965" height="594" alt={site.name} />
     </a>
 
     <nav class="nav" aria-label="Primary">
@@ -84,23 +82,14 @@ const isActive = (href: string) => (href === '/' ? current === '/' : current.sta
     color: var(--c-white);
     flex-shrink: 0;
   }
-  .brand__wordmark {
+  .brand__logo {
     width: auto;
-    height: 2.1rem;
+    height: 2.9rem;
   }
-  .brand__divider {
-    width: 1px;
-    height: 1.6rem;
-    background: rgba(255, 255, 255, 0.35);
-  }
-  .brand__location {
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 0.8125rem;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--c-yellow);
-    padding-top: 0.1em;
+  @media (min-width: 64em) {
+    .brand__logo {
+      height: 3.1rem;
+    }
   }
   .nav {
     display: none;

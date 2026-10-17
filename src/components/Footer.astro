@@ -10,7 +10,7 @@ const year = new Date().getFullYear();
   <div class="container container--wide footer__grid">
     <div class="footer__brand">
       <h2 class="footer__title">
-        Sent Ones <span class="footer__location">{site.locationLabel}</span>
+        <img class="footer__logo" src="/brand/sent-ones-denton-black.png" width="1965" height="594" alt={site.name} loading="lazy" />
       </h2>
       <p class="footer__tagline">{site.tagline}</p>
       {
@@ -108,12 +108,11 @@ const year = new Date().getFullYear();
     }
   }
   .footer__title {
-    font-size: var(--fs-h3);
-    color: var(--c-orange-deep);
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-4);
   }
-  .footer__location {
-    color: var(--c-black);
+  .footer__logo {
+    width: min(15rem, 80%);
+    height: auto;
   }
   .footer__tagline {
     font-weight: 600;

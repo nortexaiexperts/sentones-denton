@@ -46,8 +46,11 @@ export const siteSettings: SiteSettings = {
   contactEmail: null, // pending: public Denton contact email
   contactPhone: null, // pending: public Denton phone (optional)
   nationalSite: { label: 'sentones.com', href: SENTONES, external: true },
-  // Client rule (2026-10-16): only Denton's own channels, and only once Karen supplies the accounts.
-  social: [],
+  // Client rule (2026-10-16): only Denton's own channels. Supplied by the client on 2026-10-16.
+  social: [
+    { network: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/sentonesdenton/' },
+    { network: 'facebook', label: 'Facebook', href: 'https://www.facebook.com/people/Sent-Ones-Denton/61588302547374/' },
+  ],
   nationalMediaLinks: [
     { label: 'The Sent Ones Podcast', href: `${SENTONES}/the-sent-ones-podcast/`, external: true },
     { label: 'Unleash the Priest', href: `${SENTONES}/unleash-the-priest/`, external: true },
