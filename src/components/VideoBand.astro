@@ -1,0 +1,147 @@
+---
+/**
+ * Full-bleed ambient video band, matching the sentones.com homepage trailer block.
+ * Plays muted and looped once it scrolls into view; never plays with sound unless the
+ * visitor presses the sound button. Visitors who prefer reduced motion see the poster
+ * and can press play themselves.
+ */
+interface Props {
+  src: string;
+  poster: string;
+  title: string;
+}
+const { src, poster, title } = Astro.props;
+---
+
+<section class="vband" aria-label={title} data-vband>
+  <video class="vband__video" src={src} poster={poster} muted loop playsinline preload="metadata" data-vband-video>
+    <track kind="captions" />
+  </video>
+  <div class="vband__controls">
+    <button class="vband__btn" type="button" data-vband-play aria-pressed="false">
+      <svg class="vband__icon vband__icon--play" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>
+      <svg class="vband__icon vband__icon--pause" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 2h4v12H3zM9 2h4v12H9z" fill="currentColor"/></svg>
+      <span class="visually-hidden" data-vband-play-label>Play video</span>
+    </button>
+    <button class="vband__btn" type="button" data-vband-sound aria-pressed="false">
+      <svg class="vband__icon vband__icon--muted" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor"/><path d="M11 6l3 4M14 6l-3 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <svg class="vband__icon vband__icon--sound" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor"/><path d="M11 5.5a3.5 3.5 0 010 5M12.5 3.5a6 6 0 010 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span class="visually-hidden" data-vband-sound-label>Turn sound on</span>
+    </button>
+  </div>
+</section>
+
+<style>
+  .vband {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 90vh;
+    background: var(--c-black);
+    overflow: hidden;
+  }
+  .vband__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .vband__controls {
+    position: absolute;
+    right: clamp(0.75rem, 2vw, 1.5rem);
+    bottom: clamp(0.75rem, 2vw, 1.5rem);
+    display: flex;
+    gap: 0.5rem;
+  }
+  .vband__btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(0, 0, 0, 0.55);
+    color: var(--c-white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease);
+  }
+  .vband__btn:hover {
+    background: var(--c-orange);
+    color: var(--c-black);
+  }
+  .vband__icon--pause,
+  .vband__icon--sound {
+    display: none;
+  }
+  .vband.is-playing .vband__icon--play {
+    display: none;
+  }
+  .vband.is-playing .vband__icon--pause {
+    display: block;
+  }
+  .vband.has-sound .vband__icon--muted {
+    display: none;
+  }
+  .vband.has-sound .vband__icon--sound {
+    display: block;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-vband]').forEach((band) => {
+    const video = band.querySelector<HTMLVideoElement>('[data-vband-video]');
+    const playBtn = band.querySelector<HTMLButtonElement>('[data-vband-play]');
+    const playLabel = band.querySelector<HTMLElement>('[data-vband-play-label]');
+    const soundBtn = band.querySelector<HTMLButtonElement>('[data-vband-sound]');
+    const soundLabel = band.querySelector<HTMLElement>('[data-vband-sound-label]');
+    if (!video || !playBtn || !soundBtn) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let userPaused = false;
+
+    const reflect = () => {
+      const playing = !video.paused && !video.ended;
+      band.classList.toggle('is-playing', playing);
+      playBtn.setAttribute('aria-pressed', String(playing));
+      if (playLabel) playLabel.textContent = playing ? 'Pause video' : 'Play video';
+      band.classList.toggle('has-sound', !video.muted);
+      soundBtn.setAttribute('aria-pressed', String(!video.muted));
+      if (soundLabel) soundLabel.textContent = video.muted ? 'Turn sound on' : 'Turn sound off';
+    };
+    video.addEventListener('play', reflect);
+    video.addEventListener('pause', reflect);
+    video.addEventListener('volumechange', reflect);
+
+    playBtn.addEventListener('click', () => {
+      if (video.paused) {
+        userPaused = false;
+        video.play().catch(() => {});
+      } else {
+        userPaused = true;
+        video.pause();
+      }
+    });
+
+    soundBtn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      if (!video.muted && video.paused) video.play().catch(() => {});
+    });
+
+    // Autoplay (muted) only while on screen, and never for reduced-motion visitors.
+    if (!reduceMotion && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting && !userPaused) video.play().catch(() => {});
+            else if (!e.isIntersecting && !video.paused) video.pause();
+          });
+        },
+        { threshold: 0.35 },
+      );
+      io.observe(band);
+    }
+    reflect();
+  });
+</script>

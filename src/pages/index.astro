@@ -5,6 +5,7 @@ import PillarStrip from '../components/PillarStrip.astro';
 import SplitSection from '../components/SplitSection.astro';
 import StatementBand from '../components/StatementBand.astro';
 import VideoEmbed from '../components/VideoEmbed.astro';
+import VideoBand from '../components/VideoBand.astro';
 import EventCard from '../components/EventCard.astro';
 import Accordion from '../components/Accordion.astro';
 import CtaBand from '../components/CtaBand.astro';
@@ -54,24 +55,16 @@ const pickResources = ['dmc', 'four-fields', 'abiding'].map((k) => resourceGroup
   </section>
 
   {
-    home.video && (
-      <section class="trailer section section--flush-top">
-        <div class="container container--narrow">
-          <div class="trailer__head">
-            <p class="eyebrow eyebrow--rule">Watch</p>
-            <h2 class="trailer__title">{home.video.title}</h2>
-            <p class="muted">{home.video.description}</p>
+    home.video &&
+      (home.video.src ? (
+        <VideoBand src={home.video.src} poster={home.video.poster} title={home.video.title} />
+      ) : (
+        <section class="trailer section section--flush-top">
+          <div class="container container--narrow">
+            <VideoEmbed title={home.video.title} youtubeId={home.video.youtubeId} poster={{ src: home.video.poster, alt: '' }} />
           </div>
-          <VideoEmbed
-            title={home.video.title}
-            youtubeId={home.video.youtubeId}
-            src={home.video.src}
-            poster={{ src: home.video.poster, alt: '' }}
-            duration={home.video.duration}
-          />
-        </div>
-      </section>
-    )
+        </section>
+      ))
   }
 
   <StatementBand text={home.scripture.quote} attribution={home.scripture.reference} tone="orange" />
@@ -260,13 +253,6 @@ const pickResources = ['dmc', 'four-fields', 'abiding'].map((k) => resourceGroup
   }
   .path__link:hover .path__arrow {
     transform: translateX(4px);
-  }
-  .trailer__head {
-    margin-bottom: var(--space-5);
-  }
-  .trailer__title {
-    font-size: var(--fs-h2);
-    margin-bottom: var(--space-2);
   }
   .picks__grid {
     display: grid;

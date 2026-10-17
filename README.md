@@ -50,7 +50,7 @@ src/
   pages/               routes
   styles/global.css    design tokens + global styles
   assets/photos/       photography (frames from the Sent Ones trailer, see docs/CLIENT_DELIVERABLES.md)
-public/                fonts, logos, icons, robots.txt
+public/                fonts, logos, icons, trailer (web copy + poster), robots.txt
 docs/                  deliverables tracker, design system, QA report, next phase plan
 qa/screenshots/        full-page captures at 390 / 820 / 1440 px (git-ignored)
 reference/             original sentones.com reference material (do not edit)
