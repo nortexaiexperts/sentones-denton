@@ -18,6 +18,7 @@ import type {
   Opportunity,
   Post,
   ResourceGroup,
+  Rhythm,
   SiteSettings,
 } from './types';
 import { isPast } from './format';
@@ -77,6 +78,18 @@ export function getFeaturedEvents(limit = 3, now = new Date()): Event[] {
 export function getEvent(slug: string): Event | undefined {
   return getAllEvents().find((e) => e.slug === slug);
 }
+
+/** Standing rhythms: recurring gatherings that are not tied to a single date. */
+export function getRhythms(): Rhythm[] {
+  return withDemo(seed.rhythms, demo.demoRhythms).filter((r) => r.published);
+}
+
+export const eventTypeLabels: Record<Event['type'], string> = {
+  training: 'Training',
+  worship: 'Worship',
+  mobilization: 'Mobilization',
+  harvest: 'Harvest',
+};
 
 // ---------- MTC ----------
 

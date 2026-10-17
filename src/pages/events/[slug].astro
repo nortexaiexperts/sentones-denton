@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Photo from '../../components/Photo.astro';
 import SampleBadge from '../../components/SampleBadge.astro';
 import EventCard from '../../components/EventCard.astro';
-import { getAllEvents, getUpcomingEvents } from '../../lib/content';
+import { eventTypeLabels, getAllEvents, getUpcomingEvents } from '../../lib/content';
 import { formatDate, formatEventRange, formatTime, formatTzAbbr, isPast } from '../../lib/format';
 import type { Event } from '../../lib/types';
 
@@ -17,7 +17,8 @@ const when = formatEventRange(event.start, event.end, event.timezone);
 const more = getUpcomingEvents()
   .filter((e) => e.slug !== event.slug)
   .slice(0, 2);
-const typeLabel = event.type === 'training' ? 'Training' : 'Worship';
+const typeLabel = eventTypeLabels[event.type];
+const typeClass = event.type === 'worship' ? 'badge--yellow' : event.type === 'training' ? 'badge--orange' : 'badge--outline';
 const noindex = event.status === 'demo';
 ---
 
@@ -29,7 +30,7 @@ const noindex = event.status === 'demo';
           <a href="/">Home</a><span aria-hidden="true">/</span><a href="/events/">Events</a>
         </nav>
         <div class="ev__badges">
-          <span class:list={['badge', event.type === 'training' ? 'badge--orange' : 'badge--yellow']}>{typeLabel}</span>
+          <span class:list={['badge', typeClass]}>{typeLabel}</span>
           {past && <span class="badge badge--outline">Past event</span>}
           <SampleBadge status={event.status} />
         </div>

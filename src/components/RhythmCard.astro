@@ -1,0 +1,106 @@
+---
+import type { Rhythm } from '../lib/types';
+import SampleBadge from './SampleBadge.astro';
+
+interface Props {
+  rhythm: Rhythm;
+}
+const { rhythm: r } = Astro.props;
+---
+
+<article class="rhythm-card">
+  <div class="rhythm-card__head">
+    <p class="rhythm-card__cadence">
+      <span class="rhythm-card__dot" aria-hidden="true"></span>
+      {r.cadence}
+      {r.time && <span class="rhythm-card__time"> · {r.time}</span>}
+    </p>
+    <SampleBadge status={r.status} />
+  </div>
+  <h3 class="rhythm-card__title">{r.title}</h3>
+  <p class="rhythm-card__where">{r.venue.online ? 'Online' : `${r.venue.name}, ${r.venue.city}`}</p>
+  <p class="rhythm-card__desc muted">{r.description}</p>
+  <div class="rhythm-card__foot">
+    {r.audience && <span class="rhythm-card__audience">{r.audience}</span>}
+    {
+      r.cta && (
+        <a class="link link--arrow" href={r.cta.href} target={r.cta.external ? '_blank' : undefined} rel={r.cta.external ? 'noopener' : undefined}>
+          {r.cta.label}
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .rhythm-card {
+    --accent-text: var(--c-orange-ink);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--c-yellow);
+    border-radius: var(--radius);
+    height: 100%;
+  }
+  .rhythm-card__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+  .rhythm-card__cadence {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-yellow);
+  }
+  .rhythm-card__time {
+    color: var(--text-muted);
+  }
+  .rhythm-card__dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--c-yellow);
+    box-shadow: 0 0 0 4px rgba(245, 222, 87, 0.18);
+  }
+  .rhythm-card__title {
+    font-size: var(--fs-h3);
+    margin: 0;
+  }
+  .rhythm-card__where {
+    margin: 0;
+    font-weight: 700;
+    font-size: var(--fs-small);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+  }
+  .rhythm-card__desc {
+    margin: 0;
+    font-size: var(--fs-small);
+  }
+  .rhythm-card__foot {
+    margin-top: auto;
+    padding-top: var(--space-3);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    border-top: 1px solid var(--rule);
+  }
+  .rhythm-card__audience {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+</style>
