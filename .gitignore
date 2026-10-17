@@ -24,3 +24,9 @@ qa/screenshots/*.png
 Thumbs.db
 .vscode/*
 !.vscode/extensions.json
+
+# client review packs (binary deliverables, shared outside git)
+qa/review-pack/
+
+# client feedback documents (contain personal contact details; keep out of the repo)
+Feedback/
