@@ -1,0 +1,13 @@
+{
+  // Cloudflare Workers static-assets hosting for the Sent Ones Denton site.
+  // The Worker name must match the project name chosen in the Cloudflare dashboard.
+  "name": "sentones-denton",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    // Serve our own 404 page for unknown URLs instead of a blank response.
+    "not_found_handling": "404-page"
+  },
+  // Required so every branch and pull request gets its own preview URL.
+  "previews": {}
+}
