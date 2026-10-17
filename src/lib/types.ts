@@ -40,9 +40,11 @@ export interface SiteSettings {
   headerCta: Link | null;
   contactEmail: string | null; // null until confirmed
   contactPhone: string | null;
-  /** Shared Sent Ones national channels, shown with a clear "Sent Ones (national)" label. */
-  nationalSocial: SocialLink[];
+  /** Denton's own social channels only. Empty until the client supplies accounts; national channels are never listed. */
+  social: SocialLink[];
   nationalSite: Link;
+  /** Plain links to media on the national site (allowed), never embedded or featured. */
+  nationalMediaLinks: Link[];
   footerNote: string;
   disclaimer: string;
 }
@@ -80,9 +82,10 @@ export interface Homepage {
   video: {
     title: string;
     description: string;
-    src: string;
+    youtubeId?: string; // preferred: click-to-load YouTube embed
+    src?: string; // or a self-hosted file
     poster: string;
-    duration: string;
+    duration?: string;
   } | null;
   mtcTeaser: { eyebrow: string; title: string; body: string; cta: Link; image: ImageRef };
   values: { title: string; intro: string; items: ValueItem[] };

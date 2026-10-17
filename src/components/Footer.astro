@@ -57,19 +57,24 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="footer__social">
-      <h3 class="footer__heading">Follow Sent Ones</h3>
-      <p class="footer__social-note">National channels, pending Denton accounts.</p>
-      <ul class="footer__icons">
-        {
-          site.nationalSocial.map((s) => (
-            <li>
-              <a href={s.href} target="_blank" rel="noopener" aria-label={`Sent Ones on ${s.label}`}>
-                <SocialIcon network={s.network} />
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+      {
+        site.social.length > 0 && (
+          <>
+            <h3 class="footer__heading">Follow us</h3>
+            <ul class="footer__icons">
+              {site.social.map((s) => (
+                <li>
+                  <a href={s.href} target="_blank" rel="noopener" aria-label={`${site.name} on ${s.label}`}>
+                    <SocialIcon network={s.network} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+      <h3 class="footer__heading">Sent Ones</h3>
+      <p class="footer__social-note">We are a local expression of the wider Sent Ones family.</p>
       <p class="footer__social-note">
         <a class="text-link" href={site.nationalSite.href} target="_blank" rel="noopener">{site.nationalSite.label}</a>
       </p>
