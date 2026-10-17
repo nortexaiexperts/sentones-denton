@@ -21,7 +21,7 @@ Phase 1 delivered the local website. Once the design is approved, follow `workfl
 
 **Status 2026-10-17: live.** Worker `sentones-denton` in the ministry's Cloudflare account (sentonesdenton@gmail.com), deployed from the terminal with `npm run build:preview` + `npx wrangler deploy`. Custom domains `sentonesdenton.org` and `www.sentonesdenton.org` attached. Email Routing: `info@sentonesdenton.org` → `sentonesdenton@gmail.com`. The create-wizard Git connection failed repeatedly (GitHub app install loop); connect Git from the Worker's **Settings → Builds** instead.
 
-Until Git is connected, publishing is manual: merge to `main`, then run the two commands above.
+Publishing is handled by GitHub Actions (`.github/workflows/deploy.yml`): on push to `main`, daily at 11:00 UTC, and on demand. Secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` live in the GitHub repository settings. The Cloudflare-side Git integration is not used.
 
 - `wrangler.jsonc`: `name`, `compatibility_date`, `assets.directory: ./dist`, `assets.not_found_handling: 404-page`, `previews: {}` for branch previews.
 - Build command `npm run build:preview` while sample content is wanted (`npm run build` once real content exists), deploy `npx wrangler deploy`, production branch `main`.

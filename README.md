@@ -4,11 +4,7 @@ A Denton expression of [sentones.com](https://www.sentones.com): a static Astro 
 
 **Status: live preview at [sentonesdenton.org](https://sentonesdenton.org)** (noindex until launch is approved). Code on GitHub (`nortexaiexperts/sentones-denton`), hosted on Cloudflare Workers in the ministry's account. Sanity CMS and Formspree are next (see `docs/NEXT_PHASE.md`).
 
-Publish after merging to `main` (until the Git connection is set up in Cloudflare):
-
-```bash
-npm run build:preview && npx wrangler deploy
-```
+Publishing is automatic: every merge into `main` runs `.github/workflows/deploy.yml`, which builds the site and deploys it to Cloudflare. Pull requests run `verify.yml` (type-check + build) first. A manual fallback is `npm run build:preview && npx wrangler deploy`.
 
 ## Preview it
 
