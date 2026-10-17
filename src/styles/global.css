@@ -533,6 +533,10 @@ ol {
   color: var(--c-black);
   border-color: transparent;
 }
+.theme-yellow .badge--sample {
+  background: var(--c-black);
+  color: var(--c-yellow);
+}
 .chip-row {
   display: flex;
   flex-wrap: wrap;
