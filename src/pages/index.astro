@@ -62,7 +62,13 @@ const pickResources = ['dmc', 'four-fields', 'abiding'].map((k) => resourceGroup
             <h2 class="trailer__title">{home.video.title}</h2>
             <p class="muted">{home.video.description}</p>
           </div>
-          <VideoEmbed title={home.video.title} src={home.video.src} poster={{ src: home.video.poster, alt: '' }} duration={home.video.duration} />
+          <VideoEmbed
+            title={home.video.title}
+            youtubeId={home.video.youtubeId}
+            src={home.video.src}
+            poster={{ src: home.video.poster, alt: '' }}
+            duration={home.video.duration}
+          />
         </div>
       </section>
     )

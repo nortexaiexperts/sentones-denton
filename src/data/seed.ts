@@ -46,17 +46,14 @@ export const siteSettings: SiteSettings = {
   contactEmail: null, // pending: public Denton contact email
   contactPhone: null, // pending: public Denton phone (optional)
   nationalSite: { label: 'sentones.com', href: SENTONES, external: true },
-  nationalSocial: [
-    { network: 'instagram', label: 'Instagram', href: 'https://instagram.com/sent_ones_missions' },
-    { network: 'facebook', label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61557997570814' },
-    { network: 'tiktok', label: 'TikTok', href: 'https://tiktok.com/@sent_ones_missions' },
-    { network: 'youtube', label: 'YouTube', href: 'https://youtube.com/@Sent_Ones_Missions' },
-    {
-      network: 'apple-podcasts',
-      label: 'Apple Podcasts',
-      href: 'https://podcasts.apple.com/us/podcast/the-sent-ones-podcast/id1740783303',
-    },
-    { network: 'spotify', label: 'Spotify', href: 'https://open.spotify.com/show/3SALcVogotZFToc1k3cTW1' },
+  // Client rule (2026-10-16): only Denton's own channels, and only once Karen supplies the accounts.
+  social: [],
+  nationalMediaLinks: [
+    { label: 'The Sent Ones Podcast', href: `${SENTONES}/the-sent-ones-podcast/`, external: true },
+    { label: 'Unleash the Priest', href: `${SENTONES}/unleash-the-priest/`, external: true },
+    { label: 'Conversations with Coworkers', href: `${SENTONES}/conversations-with-coworkers/`, external: true },
+    { label: 'Sent Ones: the documentary', href: `${SENTONES}/doc/`, external: true },
+    { label: 'The Sent Ones blog', href: `${SENTONES}/blog/`, external: true },
   ],
   footerNote: 'Sent Ones Denton is a local expression of Sent Ones. Brand and shared resources used with permission.',
   disclaimer:
@@ -128,11 +125,10 @@ export const homepage: Homepage = {
     },
   ],
   video: {
-    title: 'Who are the Sent Ones?',
-    description: 'One minute on why we go, from the Sent Ones trailer.',
-    src: '/video/sent-ones-trailer-720.mp4',
-    poster: '/video/sent-ones-trailer-poster.jpg',
-    duration: '1:05',
+    title: 'Compelled',
+    description: 'The Sent Ones Denton video.',
+    youtubeId: 'mP3VcE5kCRY',
+    poster: 'https://i.ytimg.com/vi/mP3VcE5kCRY/maxresdefault.jpg',
   },
   mtcTeaser: {
     eyebrow: 'Missions Training Center',
@@ -558,7 +554,27 @@ export const coachingOptions: CoachingOption[] = [
   },
 ];
 
+/**
+ * Media rule (client, 2026-10-16): only Denton's own media is featured here. National Sent Ones
+ * podcasts, documentary and playlists are linked from siteSettings.nationalMediaLinks, not embedded.
+ */
 export const media: MediaItem[] = [
+  {
+    slug: 'compelled',
+    title: 'Compelled',
+    type: 'video',
+    summary: 'The Sent Ones Denton video.',
+    cover: { src: 'https://i.ytimg.com/vi/mP3VcE5kCRY/maxresdefault.jpg', alt: 'Compelled video title frame' },
+    provider: 'YouTube',
+    youtubeId: 'mP3VcE5kCRY',
+    links: [{ label: 'Watch on YouTube', href: 'https://www.youtube.com/watch?v=mP3VcE5kCRY', external: true }],
+    featured: true,
+    status: 'confirmed',
+  },
+];
+
+/** Kept for reference only (not exported through the content layer): the national items removed on 2026-10-16. */
+const _nationalMediaArchive: MediaItem[] = [
   {
     slug: 'sent-ones-documentary',
     title: 'Sent Ones: the documentary',
@@ -570,18 +586,6 @@ export const media: MediaItem[] = [
     youtubeId: 'NePwYkpaNFQ',
     links: [{ label: 'Watch on YouTube', href: 'https://www.youtube.com/watch?v=NePwYkpaNFQ', external: true }],
     featured: true,
-    status: 'shared',
-  },
-  {
-    slug: 'sent-ones-trailer',
-    title: 'Who are the Sent Ones?',
-    type: 'video',
-    summary: 'A one-minute trailer: we live in a broken world, and a generation is rising to take the gospel to the hardest and darkest places.',
-    cover: { src: '/video/sent-ones-trailer-poster.jpg', alt: 'A circle of people praying together' },
-    provider: 'Self-hosted',
-    localVideo: { src: '/video/sent-ones-trailer-720.mp4', poster: '/video/sent-ones-trailer-poster.jpg' },
-    links: [],
-    featured: false,
     status: 'shared',
   },
   {
@@ -658,6 +662,7 @@ export const media: MediaItem[] = [
     status: 'shared',
   },
 ];
+void _nationalMediaArchive;
 
 /** No confirmed Denton events, rhythms, opportunities or articles yet. Sample ones live in demo.ts. */
 export const events: Event[] = [];
