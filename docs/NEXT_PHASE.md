@@ -19,8 +19,12 @@ Phase 1 delivered the local website. Once the design is approved, follow `workfl
 
 ## 3. Cloudflare Workers (static assets)
 
+**Status 2026-10-17: live.** Worker `sentones-denton` in the ministry's Cloudflare account (sentonesdenton@gmail.com), deployed from the terminal with `npm run build:preview` + `npx wrangler deploy`. Custom domains `sentonesdenton.org` and `www.sentonesdenton.org` attached. Email Routing: `info@sentonesdenton.org` → `sentonesdenton@gmail.com`. The create-wizard Git connection failed repeatedly (GitHub app install loop); connect Git from the Worker's **Settings → Builds** instead.
+
+Until Git is connected, publishing is manual: merge to `main`, then run the two commands above.
+
 - `wrangler.jsonc`: `name`, `compatibility_date`, `assets.directory: ./dist`, `assets.not_found_handling: 404-page`, `previews: {}` for branch previews.
-- Build command `npm run build`, deploy `npx wrangler deploy`, production branch `main`.
+- Build command `npm run build:preview` while sample content is wanted (`npm run build` once real content exists), deploy `npx wrangler deploy`, production branch `main`.
 - Variables on Production **and** Previews Base: `SANITY_PROJECT_ID`, `SANITY_DATASET`, `PUBLIC_FORMSPREE_INQUIRY_ID`, `PUBLIC_SITE_URL`, and `PUBLIC_ALLOW_INDEXING=true` on production only. Replace `public/robots.txt` with an allow rule + sitemap line on production.
 - Deploy hooks: "Sanity publish" (Sanity webhook on create/update/delete, drafts off) and "Daily rebuild" (GitHub secret).
 

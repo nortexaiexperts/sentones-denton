@@ -2,7 +2,13 @@
 
 A Denton expression of [sentones.com](https://www.sentones.com): a static Astro + TypeScript website that helps people **discover their calling, develop their skills, and deploy with purpose**.
 
-**Status: phase 1, local design preview.** The complete site runs locally with structured seed content. Sanity, Cloudflare, GitHub, Formspree and scheduled rebuilds are deliberately not configured yet; they follow once the design is approved (see `docs/NEXT_PHASE.md`).
+**Status: live preview at [sentonesdenton.org](https://sentonesdenton.org)** (noindex until launch is approved). Code on GitHub (`nortexaiexperts/sentones-denton`), hosted on Cloudflare Workers in the ministry's account. Sanity CMS and Formspree are next (see `docs/NEXT_PHASE.md`).
+
+Publish after merging to `main` (until the Git connection is set up in Cloudflare):
+
+```bash
+npm run build:preview && npx wrangler deploy
+```
 
 ## Preview it
 
