@@ -131,6 +131,29 @@ const iconFor = (label: string) =>
     )
   }
 
+  {
+    site.social.length > 0 && (
+      <section class="follow section section--flush-top">
+        <div class="container follow__grid">
+          <div>
+            <h2 class="follow__title">Follow {site.name}</h2>
+            <p class="muted">New videos and stories land on our channels first.</p>
+          </div>
+          <ul class="follow__icons">
+            {site.social.map((s) => (
+              <li>
+                <a class="follow__link" href={s.href} target="_blank" rel="noopener">
+                  <SocialIcon network={s.network} size={20} />
+                  <span>{s.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
   <!-- National media: linked, never featured (client rule) -->
   <section class="national theme-ink section">
     <div class="container national__grid">
@@ -240,6 +263,51 @@ const iconFor = (label: string) =>
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3) var(--space-4);
+  }
+  .follow__grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+  }
+  .follow__title {
+    font-size: var(--fs-h3);
+    margin-bottom: var(--space-1);
+  }
+  .follow__grid p {
+    margin: 0;
+  }
+  .follow__icons {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .follow__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.1rem;
+    border: 2px solid var(--rule);
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .follow__link:hover {
+    background: var(--c-yellow);
+    border-color: var(--c-yellow);
+    color: var(--c-black);
   }
   .national__grid {
     display: grid;
