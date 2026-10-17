@@ -79,7 +79,7 @@ export const homepage: Homepage = {
     title: 'Sent to Denton. Sent from Denton.',
     body: [
       'Denton is a university city, a commuter city, and a crossroads for North Texas. Every neighborhood, campus and workplace here is a mission field, and so is every nation the people of Denton can reach.',
-      'Sent Ones Denton exists to help ordinary followers of Jesus take their next faithful step: to pray for the people around them, share the gospel simply, make disciples who make disciples, and go wherever God sends them.',
+      'Sent Ones Denton exists to make disciples who make disciples, start simple churches, and go wherever God sends them.',
     ],
   },
   scripture: { quote: 'As the Father has sent me, so I am sending you.', reference: 'John 20:21' },
@@ -136,7 +136,7 @@ export const homepage: Homepage = {
   mtcTeaser: {
     eyebrow: 'Missions Training Center',
     title: 'Learn to live like a missionary, right here in Denton',
-    body: 'A residential, hands-on training rhythm where practitioners walk alongside you as you learn biblical principles and practice them in real neighborhoods: entry, gospel, discipleship, church formation and leadership development.',
+    body: 'A residential missions training immersion for Great Commission Christians who are looking to be developed and deployed to a priority people or place. This residency blends hands-on ministry, mentored training, and community rhythms to help develop missional leaders who can catalyze and sustain gospel movements locally and globally.',
     cta: { label: 'About the MTC', href: '/mtc/' },
     image: {
       src: 'bible-study',
