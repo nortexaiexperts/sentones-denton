@@ -1,0 +1,22 @@
+# Runs on every pull request: type-check and build, so a broken change
+# is caught before it can be merged into main.
+name: Verify
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    name: Type-check and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build:preview
