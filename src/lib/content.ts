@@ -79,6 +79,9 @@ export function getEvent(slug: string): Event | undefined {
   return getAllEvents().find((e) => e.slug === slug);
 }
 
+/** Public listing of all events (Eventbrite organizer page), shown as a secondary link. */
+export const eventsListingUrl = seed.eventsListingUrl;
+
 /** Standing rhythms: recurring gatherings that are not tied to a single date. */
 export function getRhythms(): Rhythm[] {
   return withDemo(seed.rhythms, demo.demoRhythms).filter((r) => r.published);

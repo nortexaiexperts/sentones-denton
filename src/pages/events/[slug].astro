@@ -14,6 +14,7 @@ export function getStaticPaths() {
 const { event } = Astro.props as { event: Event };
 const past = isPast(event);
 const when = formatEventRange(event.start, event.end, event.timezone);
+const multiDay = Boolean(event.end) && formatDate(event.start, event.timezone) !== formatDate(event.end!, event.timezone);
 const more = getUpcomingEvents()
   .filter((e) => e.slug !== event.slug)
   .slice(0, 2);
@@ -54,13 +55,24 @@ const noindex = event.status === 'demo';
         <div class="ev__details">
           <h2 class="ev__details-title">Details</h2>
           <dl>
-            <dt>Date</dt>
-            <dd>{formatDate(event.start, event.timezone)}</dd>
-            <dt>Time</dt>
-            <dd>
-              {formatTime(event.start, event.timezone)}
-              {event.end ? ` – ${formatTime(event.end, event.timezone)}` : ''} {formatTzAbbr(event.start, event.timezone)}
-            </dd>
+            {
+              multiDay ? (
+                <>
+                  <dt>Dates</dt>
+                  <dd>{when}</dd>
+                </>
+              ) : (
+                <>
+                  <dt>Date</dt>
+                  <dd>{formatDate(event.start, event.timezone)}</dd>
+                  <dt>Time</dt>
+                  <dd>
+                    {formatTime(event.start, event.timezone)}
+                    {event.end ? ` – ${formatTime(event.end, event.timezone)}` : ''} {formatTzAbbr(event.start, event.timezone)}
+                  </dd>
+                </>
+              )
+            }
             <dt>Where</dt>
             <dd>
               {event.venue.name}
@@ -73,8 +85,14 @@ const noindex = event.status === 'demo';
               )}
               {event.venue.city}
             </dd>
-            <dt>Cost</dt>
-            <dd>{event.cost ?? 'Free'}</dd>
+            {
+              event.cost && (
+                <>
+                  <dt>Cost</dt>
+                  <dd>{event.cost}</dd>
+                </>
+              )
+            }
           </dl>
           {
             !past && event.registration ? (

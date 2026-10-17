@@ -686,8 +686,98 @@ const _nationalMediaArchive: MediaItem[] = [
 ];
 void _nationalMediaArchive;
 
-/** No confirmed Denton events, rhythms, opportunities or articles yet. Sample ones live in demo.ts. */
-export const events: Event[] = [];
+/**
+ * Confirmed Denton events, taken from the client's Eventbrite organizer page
+ * (https://www.eventbrite.com/o/121736507932) on 2026-10-17. Images are the Eventbrite listing images.
+ */
+const EVENTBRITE_ORG = 'https://www.eventbrite.com/o/121736507932';
+const ZERA = { name: 'Zera Coffee & Events', address: '420 East McKinney Street, Denton, TX 76209', city: 'Denton, TX', online: false };
+
+export const events: Event[] = [
+  {
+    slug: 'compelled-november-2026',
+    title: 'Compelled',
+    type: 'worship',
+    start: '2026-11-06T18:00:00-06:00',
+    end: '2026-11-06T21:00:00-06:00',
+    timezone: 'America/Chicago',
+    venue: ZERA,
+    image: {
+      src: 'event-compelled',
+      alt: 'Compelled: a crowd worshipping with raised hands under stage lights, in black and white',
+      credit: 'Eventbrite listing image, Sent Ones Denton',
+    },
+    summary: 'Gather with us for a night of worship, prayer, and renewed commitment to His mission.',
+    description: [
+      'As believers, we are called to impact our communities and the world. Gather with us for a night of worship, prayer, and renewed commitment to His mission.',
+      '6:00 PM: Welcome & connect. Arrive and enjoy refreshments, meet seasoned missionaries from around the world, and explore the Resource & Merch Center.',
+      '6:50 PM: Make your way into the sanctuary. We invite everyone to come in and prepare to worship together.',
+      '7:00 PM: Worship begins. Our worship gathering begins promptly at 7:00 PM.',
+    ],
+    registration: { label: 'Register on Eventbrite', href: 'https://www.eventbrite.com/e/compelled-tickets-2000667208477', external: true },
+    cost: null,
+    published: true,
+    featured: true,
+    status: 'confirmed',
+  },
+  {
+    slug: 'gospel-conversations-training-november-2026',
+    title: 'Gospel Conversations Training',
+    type: 'training',
+    start: '2026-11-08T16:00:00-06:00',
+    end: '2026-11-08T20:00:00-06:00',
+    timezone: 'America/Chicago',
+    venue: ZERA,
+    image: {
+      src: 'event-gospel-conversations-training',
+      alt: 'Two women praying with a young woman beside a campus fountain, in black and white',
+      credit: 'Eventbrite listing image, Sent Ones Denton',
+    },
+    summary: 'Want to feel more confident sharing your faith? A hands-on training in simple, biblical tools for starting spiritual conversations.',
+    description: [
+      "Join us for a hands-on Gospel Conversations Training where you'll learn simple, biblical tools to start spiritual conversations, share your story and God's story, and help others begin following Jesus.",
+      'Come ready to learn, practice, and put it into action!',
+    ],
+    registration: {
+      label: 'Register on Eventbrite',
+      href: 'https://www.eventbrite.com/e/gospel-conversations-training-tickets-2003551643901',
+      external: true,
+    },
+    cost: null,
+    published: true,
+    featured: true,
+    status: 'confirmed',
+  },
+  {
+    slug: 'harvest-push-november-2026',
+    title: 'Harvest Push',
+    type: 'harvest',
+    start: '2026-11-09T00:00:00-06:00',
+    end: '2026-11-13T23:30:00-06:00',
+    timezone: 'America/Chicago',
+    venue: { name: 'Across Denton · meeting points shared with registrants', address: null, city: 'Denton, TX', online: false },
+    image: {
+      src: 'event-harvest-push',
+      alt: 'A student talking with someone sitting on a bench along a tree-lined campus walkway, in black and white',
+      credit: 'Eventbrite listing image, Sent Ones Denton',
+    },
+    summary: 'It’s time to put our faith into action! Join us as we “flood the zone” this week across Denton with prayer-walking and gospel sharing.',
+    description: [
+      'Join us and our “team of teams” that will be deployed to target peoples, points of interest, and neighborhoods across our city. Each of our teams will be led by seasoned modelers, making it easy for even the most inexperienced and nervous participants.',
+      'Even if you may not be prepared to share directly, we still have a place for you to join and support in meaningful prayer as we go.',
+      'Detailed schedule coming.',
+    ],
+    registration: { label: 'Register on Eventbrite', href: 'https://www.eventbrite.com/e/harvest-push-tickets-2003553667955', external: true },
+    cost: null,
+    published: true,
+    featured: true,
+    status: 'confirmed',
+  },
+];
+
+export const eventsListingUrl = EVENTBRITE_ORG;
+
+/** No confirmed standing rhythms yet (Karen is sending them). Sample ones live in demo.ts. */
 export const rhythms: Rhythm[] = [];
 export const opportunities: Opportunity[] = [];
 export const authors: Author[] = [];

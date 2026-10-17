@@ -54,7 +54,11 @@ export const demoRhythms: Rhythm[] = [
   },
 ];
 
-export const demoEvents: Event[] = [
+/** Real events now come from Eventbrite (seed.ts, 2026-10-17); no sample events are shown. */
+export const demoEvents: Event[] = [];
+
+/** Retired sample events, kept briefly for reference. Not exported through the content layer. */
+const retiredDemoEvents: Event[] = [
   {
     slug: 'denton-gospel-training-november',
     title: 'Denton Gospel Training',
@@ -210,6 +214,7 @@ export const demoEvents: Event[] = [
     status: 'demo',
   },
 ];
+void retiredDemoEvents;
 
 export const demoOpportunities: Opportunity[] = [
   {
