@@ -779,15 +779,15 @@ export const eventsListingUrl = EVENTBRITE_ORG;
 
 /**
  * Standing rhythms. DCSM details from Karen's Eventbrite listing (2026-10-19):
- * first meeting Thu 12 Nov 2026 9:00 AM, series through 9 Dec 2027.
- * Cadence "second Thursday" is inferred from those dates; confirm with Karen.
+ * first meeting Thu 12 Nov 2026, series through 9 Dec 2027.
+ * Karen confirmed 2026-10-19: second Thursday of each month, 9–11 AM.
  */
 export const rhythms: Rhythm[] = [
   {
     slug: 'denton-county-strategy-meeting',
     title: 'Denton County Strategy Meeting',
     cadence: 'Second Thursday of each month',
-    time: '9:00 AM',
+    time: '9:00 – 11:00 AM',
     venue: { name: 'Zera Coffee & Events', city: 'Denton, TX', online: false },
     description:
       'A community of prayer and practice where leaders can be encouraged, championed and equipped with vision, training, and tools.',
