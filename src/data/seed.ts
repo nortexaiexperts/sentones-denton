@@ -276,9 +276,9 @@ export const mtc: MtcProgram = {
   ],
   contactNote: 'Have a question about the MTC or want to enroll? Send us a note and a Denton practitioner will reach out.',
   image: {
-    src: 'city-street-portrait',
-    alt: 'A young man standing on a busy city street, looking toward the camera',
-    credit: 'Frame from the Sent Ones trailer',
+    src: 'mtc-hero-team',
+    alt: 'Seven members of the Sent Ones Denton team standing together on the porch steps of Christian Campus Community',
+    credit: 'Sent Ones Denton (supplied by Karen, 2026-10-19)',
   },
   status: 'proposed',
 };
