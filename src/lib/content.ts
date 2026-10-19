@@ -293,8 +293,11 @@ export interface RenderedPost extends Post {
 
 const realPosts = cmsPosts ?? seed.posts;
 const realAuthors = cmsAuthors ?? seed.authors;
-/** Sample articles show only while there are no real posts; they bring their sample authors along. */
-const useDemoBlog = previewContentEnabled && realPosts.length === 0;
+/**
+ * Sample articles are switched off (client decision, 2026-10-19): the blog shows only
+ * posts published in Sanity, and an honest "coming soon" message until the first one.
+ */
+const useDemoBlog = false;
 
 export function getAuthors(): Author[] {
   return useDemoBlog ? [...realAuthors, ...demo.demoAuthors] : realAuthors;
