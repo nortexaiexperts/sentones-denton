@@ -20,6 +20,13 @@ const { rhythm: r } = Astro.props;
   <h3 class="rhythm-card__title">{r.title}</h3>
   <p class="rhythm-card__where">{r.venue.online ? 'Online' : `${r.venue.name}, ${r.venue.city}`}</p>
   <p class="rhythm-card__desc muted">{r.description}</p>
+  {
+    r.points && r.points.length > 0 && (
+      <ul class="rhythm-card__points">
+        {r.points.map((p) => <li>{p}</li>)}
+      </ul>
+    )
+  }
   <div class="rhythm-card__foot">
     {r.audience && <span class="rhythm-card__audience">{r.audience}</span>}
     {
@@ -88,6 +95,18 @@ const { rhythm: r } = Astro.props;
   .rhythm-card__desc {
     margin: 0;
     font-size: var(--fs-small);
+  }
+  .rhythm-card__points {
+    margin: 0;
+    padding-left: 1.1rem;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+  .rhythm-card__points li + li {
+    margin-top: 0.35rem;
+  }
+  .rhythm-card__points li::marker {
+    color: var(--c-yellow);
   }
   .rhythm-card__foot {
     margin-top: auto;

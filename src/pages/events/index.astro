@@ -42,7 +42,7 @@ const past = getPastEvents().slice(0, 6);
       </div>
       {
         rhythms.length > 0 ? (
-          <div class="rhythms__grid">
+          <div class:list={['rhythms__grid', { 'rhythms__grid--single': rhythms.length === 1 }]}>
             {rhythms.map((r) => (
               <RhythmCard rhythm={r} />
             ))}
@@ -155,6 +155,11 @@ const past = getPastEvents().slice(0, 6);
   @media (min-width: 64em) {
     .rhythms__grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 48em) {
+    .rhythms__grid--single {
+      grid-template-columns: minmax(0, 46rem);
     }
   }
   .events__list {
