@@ -73,6 +73,8 @@ const themeClass = tone === 'light' ? 'theme-light' : tone === 'dark' ? 'theme-d
         <textarea id={`${id}-message`} name="message" required minlength="10"></textarea>
         <p class="field__error" aria-live="polite"></p>
       </div>
+      <!-- Email subject line Formspree uses; the visitor's "email" field becomes the reply-to address. -->
+      <input type="hidden" name="_subject" value="New message from sentonesdenton.org" />
       <!-- Honeypot: hidden from people, filled by bots. Formspree ignores submissions with this set. -->
       <div class="inquiry__hp" aria-hidden="true">
         <label for={`${id}-gotcha`}>Leave this field empty</label>

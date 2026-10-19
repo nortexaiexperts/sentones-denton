@@ -49,6 +49,9 @@ jobs:
         run: npm run build:preview
         env:
           PUBLIC_SITE_URL: https://sentonesdenton.org
+          # Formspree form ID (not secret: it appears in the page HTML). Set under
+          # Settings → Secrets and variables → Actions → Variables. Empty = forms stay in preview mode.
+          PUBLIC_FORMSPREE_INQUIRY_ID: ${{ vars.PUBLIC_FORMSPREE_INQUIRY_ID }}
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v4
