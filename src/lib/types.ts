@@ -103,6 +103,8 @@ export interface Rhythm {
   time: string | null; // "7:00 – 8:30 PM"
   venue: { name: string; city: string; online: boolean };
   description: string;
+  /** Optional bullet points (what the gathering is for). */
+  points?: string[];
   audience: string | null; // "Open to all" / "Church leaders"
   cta: Link | null;
   published: boolean;

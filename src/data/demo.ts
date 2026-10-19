@@ -12,8 +12,11 @@ import type { Author, Event, MtcProgram, Opportunity, Post, Rhythm } from '../li
 
 const credit = 'Frame from the Sent Ones trailer';
 
-/** Standing rhythms: the client named "Denton County Strategy Meeting" as an example. Schedule details are placeholders. */
-export const demoRhythms: Rhythm[] = [
+/** The real DCSM now lives in seed.ts (2026-10-19), so no sample rhythms are shown. */
+export const demoRhythms: Rhythm[] = [];
+
+/** Retired sample rhythms, kept for reference only. */
+const retiredDemoRhythms: Rhythm[] = [
   {
     slug: 'denton-county-strategy-meeting',
     title: 'Denton County Strategy Meeting',
@@ -53,6 +56,7 @@ export const demoRhythms: Rhythm[] = [
     status: 'demo',
   },
 ];
+void retiredDemoRhythms;
 
 /** Real events now come from Eventbrite (seed.ts, 2026-10-17); no sample events are shown. */
 export const demoEvents: Event[] = [];
