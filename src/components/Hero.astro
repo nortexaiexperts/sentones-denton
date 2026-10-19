@@ -5,6 +5,7 @@
  *  - headline supports *emphasis* which renders yellow.
  */
 import type { ImageRef } from '../lib/types';
+import { isLocalImage, resolveImage } from '../lib/images';
 import Photo from './Photo.astro';
 
 interface Props {
@@ -29,9 +30,13 @@ const parts = headline.split(/(\*[^*]+\*)/g).filter(Boolean).map((seg) =>
   seg.startsWith('*') ? { text: seg.slice(1, -1), em: true } : { text: seg, em: false },
 );
 const Heading = headingLevel;
+
+// Split layout: the photo panel takes the photo's own shape, so the whole picture always shows.
+const resolved = resolveImage(image.src);
+const splitRatio = layout === 'split' && isLocalImage(resolved) ? `${resolved.width} / ${resolved.height}` : '4 / 3';
 ---
 
-<section class:list={['hero', `hero--${size}`, `hero--${align}`, `hero--${layout}`]}>
+<section class:list={['hero', `hero--${size}`, `hero--${align}`, `hero--${layout}`]} style={`--split-ratio: ${splitRatio}`}>
   <div class="hero__media" aria-hidden={layout === 'overlay' ? 'true' : undefined}>
     <Photo
       image={layout === 'overlay' ? { ...image, alt: '' } : image}
@@ -158,10 +163,9 @@ const Heading = headingLevel;
   }
   .hero--split .hero__media {
     position: relative;
-    aspect-ratio: 4 / 3;
-  }
-  .hero--split .hero__media :global(img) {
-    object-position: center 45%;
+    inset: auto;
+    height: auto;
+    aspect-ratio: var(--split-ratio, 4 / 3);
   }
   .hero--split .hero__content {
     padding-block: clamp(2.5rem, 6vw, 4rem);
@@ -169,12 +173,11 @@ const Heading = headingLevel;
   @media (min-width: 64em) {
     .hero--split {
       grid-template-columns: 1fr 1fr;
-      min-height: clamp(26rem, 60vh, 38rem);
     }
     .hero--split .hero__media {
       grid-column: 2;
       grid-row: 1;
-      aspect-ratio: auto;
+      align-self: center;
     }
     .hero--split .hero__content {
       grid-column: 1;

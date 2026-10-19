@@ -7,7 +7,8 @@ interface Props {
   text: string;
   attribution?: string;
   tone?: 'orange' | 'yellow' | 'black';
-  size?: 'lg' | 'md';
+  /** "lg"/"md" = big all-caps display statement; "text" = normal reading paragraph for longer info. */
+  size?: 'lg' | 'md' | 'text';
   quote?: boolean;
 }
 const { text, attribution, tone = 'orange', size = 'lg', quote = true } = Astro.props;
@@ -45,8 +46,22 @@ const themeClass = tone === 'orange' ? 'theme-orange' : tone === 'yellow' ? 'the
     font-size: var(--fs-h2);
     max-width: 34ch;
   }
+  .band--text .band__text {
+    font-family: var(--font-body);
+    text-transform: none;
+    font-size: var(--fs-lead);
+    font-weight: 500;
+    line-height: 1.6;
+    max-width: 46rem;
+    text-wrap: pretty;
+  }
   .band--black .band__text {
     color: var(--c-yellow);
+  }
+  .band--black.band--text .band__text {
+    color: var(--c-white);
+    border-left: 4px solid var(--c-orange);
+    padding-left: var(--space-5);
   }
   /* Brand pattern: large white Bebas on orange (passes the 3:1 large-text threshold); attribution stays black. */
   .band--orange .band__text {
