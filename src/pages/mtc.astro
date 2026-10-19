@@ -21,7 +21,7 @@ const facts = [
 ---
 
 <BaseLayout title="Missions Training Center" description={mtc.intro}>
-  <Hero image={mtc.image} kicker={mtc.kicker} headline="Missions *Training* Center" lead={mtc.intro} size="page">
+  <Hero image={mtc.image} kicker={mtc.kicker} headline="Missions *Training* Center" lead={mtc.intro} size="page" layout="split">
     {
       mtc.apply ? (
         <a class="btn btn--yellow" href={mtc.apply.href} target={mtc.apply.external ? '_blank' : undefined} rel={mtc.apply.external ? 'noopener' : undefined}>

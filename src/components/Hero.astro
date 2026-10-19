@@ -15,10 +15,14 @@ interface Props {
   size?: 'full' | 'page' | 'short';
   align?: 'left' | 'center';
   headingLevel?: 'h1' | 'p';
-  /** Optional sample badge slot. */
+  /**
+   * "overlay" (default): text over a darkened full-width photo.
+   * "split": text on black beside the photo, for group photos where faces must stay clear.
+   */
+  layout?: 'overlay' | 'split';
 }
 
-const { image, kicker, headline, lead, size = 'page', align = 'left', headingLevel = 'h1' } = Astro.props;
+const { image, kicker, headline, lead, size = 'page', align = 'left', headingLevel = 'h1', layout = 'overlay' } = Astro.props;
 
 // "*Lost people matter,* and so…" → [{text, em}]
 const parts = headline.split(/(\*[^*]+\*)/g).filter(Boolean).map((seg) =>
@@ -27,9 +31,15 @@ const parts = headline.split(/(\*[^*]+\*)/g).filter(Boolean).map((seg) =>
 const Heading = headingLevel;
 ---
 
-<section class:list={['hero', `hero--${size}`, `hero--${align}`]}>
-  <div class="hero__media" aria-hidden="true">
-    <Photo image={image} widths={[640, 1024, 1440, 1920]} sizes="100vw" priority class="hero__img" />
+<section class:list={['hero', `hero--${size}`, `hero--${align}`, `hero--${layout}`]}>
+  <div class="hero__media" aria-hidden={layout === 'overlay' ? 'true' : undefined}>
+    <Photo
+      image={layout === 'overlay' ? { ...image, alt: '' } : image}
+      widths={[640, 1024, 1440, 1920]}
+      sizes={layout === 'split' ? '(min-width: 64em) 50vw, 100vw' : '100vw'}
+      priority
+      class="hero__img"
+    />
   </div>
   <div class="hero__overlay" aria-hidden="true"></div>
   <div class="container container--wide hero__content">
@@ -136,5 +146,45 @@ const Heading = headingLevel;
   }
   .hero--center .hero__actions {
     justify-content: center;
+  }
+
+  /* ----- split layout: photo beside the text, never under it ----- */
+  .hero--split {
+    min-height: 0;
+    align-items: stretch;
+  }
+  .hero--split .hero__overlay {
+    display: none;
+  }
+  .hero--split .hero__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+  }
+  .hero--split .hero__media :global(img) {
+    object-position: center 45%;
+  }
+  .hero--split .hero__content {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+  }
+  @media (min-width: 64em) {
+    .hero--split {
+      grid-template-columns: 1fr 1fr;
+      min-height: clamp(26rem, 60vh, 38rem);
+    }
+    .hero--split .hero__media {
+      grid-column: 2;
+      grid-row: 1;
+      aspect-ratio: auto;
+    }
+    .hero--split .hero__content {
+      grid-column: 1;
+      grid-row: 1;
+      align-self: center;
+      max-width: none;
+      padding-inline: var(--gutter) clamp(2rem, 4vw, 4rem);
+    }
+    .hero--split .hero__headline {
+      max-width: 12ch;
+    }
   }
 </style>
