@@ -71,9 +71,9 @@ export const homepage: Homepage = {
     primaryCta: { label: 'Find your next step', href: '#next-step' },
     secondaryCta: { label: 'See upcoming events', href: '/events/' },
     image: {
-      src: 'hero-prayer-circle',
-      alt: 'A circle of people with bowed heads holding hands in prayer outside a building',
-      credit: 'Frame from the Sent Ones trailer',
+      src: 'home-hero-bible-table',
+      alt: 'Three people talking together over open Bibles at a table during a training',
+      credit: 'Sent Ones Denton (supplied by Karen, 2026-10-19)',
     },
   },
   intro: {
@@ -93,9 +93,9 @@ export const homepage: Homepage = {
       cta: { label: 'Explore calling & coaching', href: '/resources/#coaching' },
       secondaryLinks: [{ label: 'Read stories from the field', href: '/blog/' }],
       image: {
-        src: 'friends-on-wall',
-        alt: 'Four friends sitting together on a low stone wall, talking',
-        credit: 'Frame from the Sent Ones trailer',
+        src: 'discover-friends',
+        alt: 'Two friends smiling and making peace signs in a selfie',
+        credit: 'Sent Ones Denton (supplied by Karen, 2026-10-19)',
       },
     },
     {
@@ -109,9 +109,9 @@ export const homepage: Homepage = {
         { label: 'Training resources', href: '/resources/' },
       ],
       image: {
-        src: 'training-whiteboard',
-        alt: 'A trainer teaching a small group with diagrams drawn on a whiteboard',
-        credit: 'Frame from the Sent Ones trailer',
+        src: 'develop-teaching-wall',
+        alt: 'A young man teaching from hand-drawn diagrams on the wall while a woman follows along in her Bible',
+        credit: 'Sent Ones Denton (supplied by Karen, 2026-10-19)',
       },
     },
     {
@@ -121,9 +121,9 @@ export const homepage: Homepage = {
       body: 'The mission field is all around us. Whether you are called to a Denton neighborhood, a Texas city, or an unreached people group overseas, we want to help you go prepared, supported and fruitful.',
       cta: { label: 'Deployment opportunities', href: '/deployment-opportunities/' },
       image: {
-        src: 'dirt-road',
-        alt: 'A long red dirt road stretching toward the horizon with people walking along it',
-        credit: 'Frame from the Sent Ones trailer',
+        src: 'deploy-team-steps',
+        alt: 'A mission team sitting together on the steps of a historic pink palace',
+        credit: 'Sent Ones Denton (supplied by Karen, 2026-10-19)',
       },
     },
   ],
@@ -141,9 +141,9 @@ export const homepage: Homepage = {
     body: 'A residential missions training immersion for Great Commission Christians who are looking to be developed and deployed to a priority people or place. This residency blends hands-on ministry, mentored training, and community rhythms to help develop missional leaders who can catalyze and sustain gospel movements locally and globally.',
     cta: { label: 'About the MTC', href: '/mtc/' },
     image: {
-      src: 'bible-study',
-      alt: 'People reading open Bibles together in a small group',
-      credit: 'Frame from the Sent Ones trailer',
+      src: 'mtc-training-listening',
+      alt: 'Two participants listening closely during a training session',
+      credit: 'Sent Ones Denton (supplied by Karen, 2026-10-19)',
     },
   },
   values: {
