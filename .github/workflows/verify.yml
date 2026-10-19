@@ -20,3 +20,5 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run build:preview
+        env:
+          PUBLIC_FORMSPREE_INQUIRY_ID: ${{ vars.PUBLIC_FORMSPREE_INQUIRY_ID }}
