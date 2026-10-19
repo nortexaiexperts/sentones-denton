@@ -1,8 +1,9 @@
 # Builds the site and publishes it to Cloudflare Workers.
 #
-# Runs on: every push to main (i.e. every merged pull request), a daily schedule
-# (so past events roll off without anyone touching the site), and the "Run workflow"
-# button in the Actions tab.
+# Runs on: every push to main (i.e. every merged pull request), every Publish in the
+# Sanity dashboard (via a Sanity webhook → GitHub "repository_dispatch"), a daily
+# schedule (so past events roll off without anyone touching the site), and the
+# "Run workflow" button in the Actions tab.
 #
 # Needs two repository secrets (Settings → Secrets and variables → Actions):
 #   CLOUDFLARE_API_TOKEN   token with "Edit Cloudflare Workers" permissions
@@ -12,6 +13,9 @@ name: Deploy to Cloudflare
 on:
   push:
     branches: [main]
+  repository_dispatch:
+    # Sent by the Sanity webhook "Rebuild website" whenever editors publish.
+    types: [sanity-publish]
   schedule:
     # 11:00 UTC daily = 6:00 AM Central during daylight time, 5:00 AM in winter.
     # GitHub cron is always UTC and does not follow daylight-saving changes.
