@@ -52,6 +52,9 @@ jobs:
           # Formspree form ID (not secret: it appears in the page HTML). Set under
           # Settings → Secrets and variables → Actions → Variables. Empty = forms stay in preview mode.
           PUBLIC_FORMSPREE_INQUIRY_ID: ${{ vars.PUBLIC_FORMSPREE_INQUIRY_ID }}
+          # Sanity: events, rhythms and blog posts come from the editors' dashboard.
+          SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID }}
+          SANITY_DATASET: ${{ vars.SANITY_DATASET }}
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v4

@@ -22,3 +22,5 @@ jobs:
       - run: npm run build:preview
         env:
           PUBLIC_FORMSPREE_INQUIRY_ID: ${{ vars.PUBLIC_FORMSPREE_INQUIRY_ID }}
+          SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID }}
+          SANITY_DATASET: ${{ vars.SANITY_DATASET }}

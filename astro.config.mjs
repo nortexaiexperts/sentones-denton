@@ -17,7 +17,7 @@ export default defineConfig({
   },
   image: {
     // Trailer poster thumbnails from YouTube are the only remote images right now.
-    domains: ['i.ytimg.com'],
+    domains: ['i.ytimg.com', 'cdn.sanity.io'],
   },
   prefetch: {
     prefetchAll: false,

@@ -248,7 +248,9 @@ export interface Post {
   categories: string[];
   image: ImageRef;
   excerpt: string;
-  body: string; // Markdown
+  body: string; // Markdown (seed/demo) or plain text (Sanity, for reading time)
+  /** Pre-rendered HTML, set for posts that come from Sanity. */
+  bodyHtml?: string;
   seo: { title?: string; description?: string };
   published: boolean;
   status: ContentStatus;

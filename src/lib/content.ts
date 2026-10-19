@@ -1,13 +1,15 @@
 /**
  * The single content-access layer. Pages import from here and nowhere else.
  *
- * Today: seed content (+ clearly labelled sample content when preview mode is on).
- * Later:  if SANITY_PROJECT_ID is set, fetch from Sanity at build time and fail the
- *         build loudly on fetch errors instead of silently falling back to seed data.
+ * Events, standing rhythms, blog posts and authors come from Sanity when
+ * SANITY_PROJECT_ID is set (the editors' dashboard). Everything else, and those four
+ * collections when Sanity is not configured, comes from src/data/seed.ts.
+ * A Sanity fetch error fails the build loudly: we never silently publish stale seed data.
  */
 import { marked } from 'marked';
 import * as seed from '../data/seed';
 import * as demo from '../data/demo';
+import { blocksToHtml, blocksToParagraphs, blocksToText, sanityClient, sanityImageUrl } from './sanity';
 import type {
   Author,
   CoachingOption,
@@ -28,18 +30,133 @@ export const previewContentEnabled: boolean =
   import.meta.env.PUBLIC_PREVIEW_CONTENT === 'true' ||
   (import.meta.env.DEV && import.meta.env.PUBLIC_PREVIEW_CONTENT !== 'false');
 
-export const sanityConfigured: boolean = Boolean(import.meta.env.SANITY_PROJECT_ID);
+export const sanityConfigured: boolean = Boolean(sanityClient);
 
-if (sanityConfigured) {
-  // Phase 2: replace the seed reads below with Sanity queries (see src/lib/sanity.ts, to be added).
-  throw new Error(
-    'SANITY_PROJECT_ID is set but the Sanity client is not wired up yet. Unset it to build from seed content.',
-  );
-}
-
+/** Sample content only fills a collection that has no real content yet. */
 function withDemo<T>(confirmed: T[], sample: T[]): T[] {
-  return previewContentEnabled ? [...confirmed, ...sample] : confirmed;
+  return previewContentEnabled && confirmed.length === 0 ? sample : confirmed;
 }
+
+// ---------- Sanity (loaded once per build) ----------
+
+const TZ = 'America/Chicago';
+
+type SanityImage = { asset?: unknown; alt?: string } | null;
+interface SanityEvent {
+  _id: string; title: string; slug: string; type: Event['type']; start: string; end?: string;
+  featured?: boolean; online?: boolean; venueName?: string; address?: string; city?: string;
+  image?: SanityImage; summary: string; description?: unknown;
+  registrationUrl?: string; registrationLabel?: string; cost?: string;
+}
+interface SanityRhythm {
+  _id: string; title: string; cadence: string; time?: string; online?: boolean; venueName?: string; city?: string;
+  description: string; points?: string[]; audience?: string; joinLabel?: string; joinUrl?: string;
+}
+interface SanityAuthor { _id: string; name: string; slug: string; role?: string; bio?: string }
+interface SanityPost {
+  _id: string; title: string; slug: string; authorSlug?: string; date: string; categories?: string[];
+  image?: SanityImage; imageCaption?: string; excerpt: string; body?: unknown; seoTitle?: string; seoDescription?: string;
+}
+
+const QUERY = `{
+  "events": *[_type == "event" && defined(slug.current) && defined(start)] | order(start asc) {
+    _id, title, "slug": slug.current, type, start, end, featured, online, venueName, address, city,
+    image, summary, description, registrationUrl, registrationLabel, cost
+  },
+  "rhythms": *[_type == "rhythm"] | order(coalesce(order, 100) asc, title asc) {
+    _id, title, cadence, time, online, venueName, city, description, points, audience, joinLabel, joinUrl
+  },
+  "authors": *[_type == "author" && defined(slug.current)] { _id, name, "slug": slug.current, role, bio },
+  "posts": *[_type == "post" && defined(slug.current) && defined(date)] | order(date desc) {
+    _id, title, "slug": slug.current, "authorSlug": author->slug.current, date, categories,
+    image, imageCaption, excerpt, body, seoTitle, seoDescription
+  }
+}`;
+
+interface SanityData { events: SanityEvent[]; rhythms: SanityRhythm[]; authors: SanityAuthor[]; posts: SanityPost[] }
+
+async function loadSanity(): Promise<SanityData | null> {
+  if (!sanityClient) return null;
+  try {
+    return await sanityClient.fetch<SanityData>(QUERY);
+  } catch (err) {
+    throw new Error(
+      `Could not load content from Sanity (project ${sanityClient.config().projectId}). ` +
+        `The build stops here so the live site keeps its last good version. Cause: ${(err as Error).message}`,
+    );
+  }
+}
+
+const cms = await loadSanity();
+
+function imageRef(img: SanityImage | undefined, fallbackAlt: string) {
+  const src = img?.asset ? sanityImageUrl(img, 1600) : '';
+  return { src: src || 'walking-together', alt: img?.alt || fallbackAlt };
+}
+
+const cmsEvents: Event[] | null = cms
+  ? cms.events.map((e) => ({
+      slug: e.slug,
+      title: e.title,
+      type: e.type ?? 'training',
+      start: e.start,
+      end: e.end ?? null,
+      timezone: TZ,
+      venue: {
+        name: e.venueName ?? (e.online ? 'Online' : 'To be announced'),
+        address: e.online ? null : (e.address ?? null),
+        city: e.online ? 'Online' : (e.city ?? 'Denton, TX'),
+        online: Boolean(e.online),
+      },
+      image: imageRef(e.image, e.title),
+      summary: e.summary,
+      description: blocksToParagraphs(e.description).length ? blocksToParagraphs(e.description) : [e.summary],
+      registration: e.registrationUrl
+        ? { label: e.registrationLabel || 'Register', href: e.registrationUrl, external: /^https?:/.test(e.registrationUrl) }
+        : null,
+      cost: e.cost ?? null,
+      published: true,
+      featured: e.featured ?? true,
+      status: 'confirmed',
+    }))
+  : null;
+
+const cmsRhythms: Rhythm[] | null = cms
+  ? cms.rhythms.map((r) => ({
+      slug: r._id,
+      title: r.title,
+      cadence: r.cadence,
+      time: r.time ?? null,
+      venue: { name: r.online ? 'Online' : (r.venueName ?? 'Location shared on request'), city: r.online ? 'Online' : (r.city ?? 'Denton, TX'), online: Boolean(r.online) },
+      description: r.description,
+      points: r.points ?? [],
+      audience: r.audience ?? null,
+      cta: r.joinUrl ? { label: r.joinLabel || 'Ask to join', href: r.joinUrl, external: /^https?:/.test(r.joinUrl) } : null,
+      published: true,
+      status: 'confirmed',
+    }))
+  : null;
+
+const cmsAuthors: Author[] | null = cms
+  ? cms.authors.map((a) => ({ slug: a.slug, name: a.name, role: a.role ?? '', bio: a.bio ?? '', status: 'confirmed' }))
+  : null;
+
+const cmsPosts: Post[] | null = cms
+  ? cms.posts.map((p) => ({
+      slug: p.slug,
+      title: p.title,
+      authorSlug: p.authorSlug ?? 'unknown',
+      date: p.date,
+      categories: p.categories?.length ? p.categories : ['Discipleship'],
+      image: { ...imageRef(p.image, p.title), credit: p.imageCaption },
+      excerpt: p.excerpt,
+      body: blocksToText(p.body),
+      bodyHtml: blocksToHtml(p.body),
+      seo: { title: p.seoTitle, description: p.seoDescription },
+      published: true,
+      status: 'confirmed',
+    }))
+  : null;
 
 // ---------- Site-wide ----------
 
@@ -54,7 +171,7 @@ export function getHomepage(): Homepage {
 // ---------- Events ----------
 
 export function getAllEvents(): Event[] {
-  return withDemo(seed.events, demo.demoEvents)
+  return withDemo(cmsEvents ?? seed.events, demo.demoEvents)
     .filter((e) => e.published)
     .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
 }
@@ -84,7 +201,7 @@ export const eventsListingUrl = seed.eventsListingUrl;
 
 /** Standing rhythms: recurring gatherings that are not tied to a single date. */
 export function getRhythms(): Rhythm[] {
-  return withDemo(seed.rhythms, demo.demoRhythms).filter((r) => r.published);
+  return withDemo(cmsRhythms ?? seed.rhythms, demo.demoRhythms).filter((r) => r.published);
 }
 
 export const eventTypeLabels: Record<Event['type'], string> = {
@@ -174,12 +291,17 @@ export interface RenderedPost extends Post {
   bodyHtml: string;
 }
 
+const realPosts = cmsPosts ?? seed.posts;
+const realAuthors = cmsAuthors ?? seed.authors;
+/** Sample articles show only while there are no real posts; they bring their sample authors along. */
+const useDemoBlog = previewContentEnabled && realPosts.length === 0;
+
 export function getAuthors(): Author[] {
-  return withDemo(seed.authors, demo.demoAuthors);
+  return useDemoBlog ? [...realAuthors, ...demo.demoAuthors] : realAuthors;
 }
 
 export function getPosts(): Post[] {
-  return withDemo(seed.posts, demo.demoPosts)
+  return (useDemoBlog ? demo.demoPosts : realPosts)
     .filter((p) => p.published)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
@@ -201,7 +323,7 @@ export function getPost(slug: string): RenderedPost | undefined {
     bio: '',
     status: 'proposed' as const,
   };
-  const bodyHtml = marked.parse(post.body, { async: false }) as string;
+  const bodyHtml = post.bodyHtml ?? (marked.parse(post.body, { async: false }) as string);
   return { ...post, author, bodyHtml };
 }
 
