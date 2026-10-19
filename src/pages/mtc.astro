@@ -21,7 +21,7 @@ const facts = [
 ---
 
 <BaseLayout title="Missions Training Center" description={mtc.intro}>
-  <Hero image={mtc.image} kicker={mtc.kicker} headline="Missions *Training* Center" lead={mtc.intro} size="page" layout="split">
+  <Hero image={mtc.image} kicker={mtc.kicker} headline="Missions *Training* Center" lead={mtc.intro} size="page">
     {
       mtc.apply ? (
         <a class="btn btn--yellow" href={mtc.apply.href} target={mtc.apply.external ? '_blank' : undefined} rel={mtc.apply.external ? 'noopener' : undefined}>
@@ -53,7 +53,7 @@ const facts = [
     </div>
   </section>
 
-  <StatementBand text={mtc.statement} tone="black" size="md" quote={false} />
+  <StatementBand text={mtc.statement} tone="black" size="text" quote={false} />
   <PillarStrip />
 
   <!-- Who it's for -->

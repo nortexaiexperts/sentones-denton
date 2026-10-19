@@ -253,7 +253,7 @@ export const mtc: MtcProgram = {
     {
       question: 'Who facilitates the training?',
       answer:
-        'Local missionary practitioners with years of field experience. Facilitator details for Denton will be published once confirmed.',
+        'Local missionary practitioners with years of field experience.',
     },
   ],
   apply: { label: 'Ask about enrollment', href: '#mtc-inquiry' },
