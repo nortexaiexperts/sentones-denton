@@ -47,7 +47,7 @@ for (const e of events.filter((x) => x.status === 'confirmed')) {
     _type: 'event',
     title: e.title,
     slug: {_type: 'slug', current: e.slug},
-    type: e.type,
+    types: e.types,
     start: new Date(e.start).toISOString(),
     ...(e.end ? {end: new Date(e.end).toISOString()} : {}),
     featured: e.featured,

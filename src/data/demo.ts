@@ -66,7 +66,7 @@ const retiredDemoEvents: Event[] = [
   {
     slug: 'denton-gospel-training-november',
     title: 'Denton Gospel Training',
-    type: 'training',
+    types: ['training'],
     start: '2026-11-14T09:00:00-06:00',
     end: '2026-11-14T15:00:00-06:00',
     timezone: 'America/Chicago',
@@ -88,7 +88,7 @@ const retiredDemoEvents: Event[] = [
   {
     slug: 'worship-and-prayer-night-november',
     title: 'Worship & Prayer for the Nations',
-    type: 'worship',
+    types: ['worship'],
     start: '2026-11-20T19:00:00-06:00',
     end: '2026-11-20T21:00:00-06:00',
     timezone: 'America/Chicago',
@@ -108,7 +108,7 @@ const retiredDemoEvents: Event[] = [
   {
     slug: 'four-fields-workshop-december',
     title: 'Four Fields Workshop',
-    type: 'training',
+    types: ['training'],
     start: '2026-12-05T09:00:00-06:00',
     end: '2026-12-05T12:30:00-06:00',
     timezone: 'America/Chicago',
@@ -129,7 +129,7 @@ const retiredDemoEvents: Event[] = [
   {
     slug: 'north-texas-harvest-weekend',
     title: 'North Texas Harvest Weekend',
-    type: 'harvest',
+    types: ['harvest'],
     start: '2026-12-12T09:00:00-06:00',
     end: '2026-12-13T16:00:00-06:00',
     timezone: 'America/Chicago',
@@ -149,7 +149,7 @@ const retiredDemoEvents: Event[] = [
   {
     slug: 'dmc-info-night-january',
     title: 'Disciple Making Community: Winter Cohort Info Night',
-    type: 'mobilization',
+    types: ['mobilization'],
     start: '2027-01-14T19:30:00-06:00',
     end: '2027-01-14T20:30:00-06:00',
     timezone: 'America/Chicago',
@@ -169,7 +169,7 @@ const retiredDemoEvents: Event[] = [
   {
     slug: 'night-of-worship-january',
     title: 'Night of Worship',
-    type: 'worship',
+    types: ['worship'],
     start: '2027-01-29T19:00:00-06:00',
     end: null,
     timezone: 'America/Chicago',
@@ -186,7 +186,7 @@ const retiredDemoEvents: Event[] = [
   {
     slug: 'fall-kickoff-worship-night',
     title: 'Fall Kickoff Worship Night',
-    type: 'worship',
+    types: ['worship'],
     start: '2026-09-11T19:00:00-05:00',
     end: '2026-09-11T21:00:00-05:00',
     timezone: 'America/Chicago',
@@ -203,7 +203,7 @@ const retiredDemoEvents: Event[] = [
   {
     slug: 'oikos-mapping-workshop-august',
     title: 'Oikos Mapping Workshop',
-    type: 'training',
+    types: ['training'],
     start: '2026-08-22T09:00:00-05:00',
     end: '2026-08-22T12:00:00-05:00',
     timezone: 'America/Chicago',

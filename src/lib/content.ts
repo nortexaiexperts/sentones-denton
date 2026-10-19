@@ -14,6 +14,7 @@ import type {
   Author,
   CoachingOption,
   Event,
+  EventType,
   Homepage,
   MediaItem,
   MtcProgram,
@@ -43,7 +44,7 @@ const TZ = 'America/Chicago';
 
 type SanityImage = { asset?: unknown; alt?: string } | null;
 interface SanityEvent {
-  _id: string; title: string; slug: string; type: Event['type']; start: string; end?: string;
+  _id: string; title: string; slug: string; types?: Event['types']; start: string; end?: string;
   featured?: boolean; online?: boolean; venueName?: string; address?: string; city?: string;
   image?: SanityImage; summary: string; description?: unknown;
   registrationUrl?: string; registrationLabel?: string; cost?: string;
@@ -53,6 +54,11 @@ interface SanityRhythm {
   description: string; points?: string[]; audience?: string; joinLabel?: string; joinUrl?: string;
 }
 interface SanityAuthor { _id: string; name: string; slug: string; role?: string; bio?: string }
+interface SanityOpportunity {
+  _id: string; title: string; slug: string; region: string; scope: Opportunity['scope']; availability: Opportunity['availability'];
+  overview: string; image?: SanityImage; dates?: string; duration?: string; purpose?: string[]; requirements?: string[];
+  preparation?: string[]; partner?: string; cost?: string; applyLabel?: string; applyUrl?: string;
+}
 interface SanityPost {
   _id: string; title: string; slug: string; authorSlug?: string; date: string; categories?: string[];
   image?: SanityImage; imageCaption?: string; excerpt: string; body?: unknown; seoTitle?: string; seoDescription?: string;
@@ -60,20 +66,29 @@ interface SanityPost {
 
 const QUERY = `{
   "events": *[_type == "event" && defined(slug.current) && defined(start)] | order(start asc) {
-    _id, title, "slug": slug.current, type, start, end, featured, online, venueName, address, city,
+    _id, title, "slug": slug.current,
+    // "types" (list) is current; older documents only have the single "type" field.
+    "types": select(defined(types[0]) => types, defined(type) => [type], ["training"]),
+    start, end, featured, online, venueName, address, city,
     image, summary, description, registrationUrl, registrationLabel, cost
   },
   "rhythms": *[_type == "rhythm"] | order(coalesce(order, 100) asc, title asc) {
     _id, title, cadence, time, online, venueName, city, description, points, audience, joinLabel, joinUrl
   },
   "authors": *[_type == "author" && defined(slug.current)] { _id, name, "slug": slug.current, role, bio },
+  "opportunities": *[_type == "opportunity" && defined(slug.current)] | order(title asc) {
+    _id, title, "slug": slug.current, region, scope, availability, overview, image, dates, duration,
+    purpose, requirements, preparation, partner, cost, applyLabel, applyUrl
+  },
   "posts": *[_type == "post" && defined(slug.current) && defined(date)] | order(date desc) {
     _id, title, "slug": slug.current, "authorSlug": author->slug.current, date, categories,
     image, imageCaption, excerpt, body, seoTitle, seoDescription
   }
 }`;
 
-interface SanityData { events: SanityEvent[]; rhythms: SanityRhythm[]; authors: SanityAuthor[]; posts: SanityPost[] }
+interface SanityData {
+  events: SanityEvent[]; rhythms: SanityRhythm[]; authors: SanityAuthor[]; posts: SanityPost[]; opportunities: SanityOpportunity[];
+}
 
 async function loadSanity(): Promise<SanityData | null> {
   if (!sanityClient) return null;
@@ -98,7 +113,7 @@ const cmsEvents: Event[] | null = cms
   ? cms.events.map((e) => ({
       slug: e.slug,
       title: e.title,
-      type: e.type ?? 'training',
+      types: e.types?.length ? e.types : ['training'],
       start: e.start,
       end: e.end ?? null,
       timezone: TZ,
@@ -132,6 +147,28 @@ const cmsRhythms: Rhythm[] | null = cms
       points: r.points ?? [],
       audience: r.audience ?? null,
       cta: r.joinUrl ? { label: r.joinLabel || 'Ask to join', href: r.joinUrl, external: /^https?:/.test(r.joinUrl) } : null,
+      published: true,
+      status: 'confirmed',
+    }))
+  : null;
+
+const cmsOpportunities: Opportunity[] | null = cms
+  ? cms.opportunities.map((o) => ({
+      slug: o.slug,
+      title: o.title,
+      region: o.region,
+      scope: o.scope ?? 'local',
+      availability: o.availability ?? 'open',
+      overview: o.overview,
+      purpose: o.purpose ?? [],
+      dates: o.dates ?? null,
+      duration: o.duration ?? null,
+      requirements: o.requirements ?? [],
+      preparation: o.preparation ?? [],
+      partner: o.partner ?? null,
+      cost: o.cost ?? null,
+      apply: o.applyUrl ? { label: o.applyLabel || 'Ask about this opportunity', href: o.applyUrl, external: /^https?:/.test(o.applyUrl) } : null,
+      image: imageRef(o.image, o.title),
       published: true,
       status: 'confirmed',
     }))
@@ -204,12 +241,16 @@ export function getRhythms(): Rhythm[] {
   return withDemo(cmsRhythms ?? seed.rhythms, demo.demoRhythms).filter((r) => r.published);
 }
 
-export const eventTypeLabels: Record<Event['type'], string> = {
+export const eventTypeLabels: Record<EventType, string> = {
   training: 'Training',
   worship: 'Worship',
   mobilization: 'Mobilization',
   harvest: 'Harvest',
 };
+
+/** Badge colour per event type. */
+export const eventTypeBadge = (t: EventType): string =>
+  t === 'worship' ? 'badge--yellow' : t === 'training' ? 'badge--orange' : 'badge--outline';
 
 // ---------- MTC ----------
 
@@ -255,7 +296,9 @@ export function getMtcSampleFlags(): Record<string, boolean> {
 const availabilityOrder = { open: 0, upcoming: 1, closed: 2 } as const;
 
 export function getOpportunities(): Opportunity[] {
-  return withDemo(seed.opportunities, demo.demoOpportunities)
+  // Sample opportunities are switched off (client, 2026-10-19): only real ones from the dashboard show,
+  // with the "Opportunities are being confirmed" message until the first is published.
+  return (cmsOpportunities ?? seed.opportunities)
     .filter((o) => o.published)
     .sort((a, b) => availabilityOrder[a.availability] - availabilityOrder[b.availability]);
 }

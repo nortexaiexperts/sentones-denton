@@ -1,5 +1,6 @@
 import {CalendarIcon} from '@sanity/icons/Calendar'
 import {DocumentTextIcon} from '@sanity/icons/DocumentText'
+import {EarthGlobeIcon} from '@sanity/icons/EarthGlobe'
 import {SyncIcon} from '@sanity/icons/Sync'
 import {UserIcon} from '@sanity/icons/User'
 import type {StructureResolver} from 'sanity/structure'
@@ -31,6 +32,10 @@ export const structure: StructureResolver = (S) =>
         .title('Standing rhythms')
         .icon(SyncIcon)
         .child(S.documentTypeList('rhythm').title('Standing rhythms').defaultOrdering([{field: 'order', direction: 'asc'}])),
+      S.listItem()
+        .title('Deployment opportunities')
+        .icon(EarthGlobeIcon)
+        .child(S.documentTypeList('opportunity').title('Deployment opportunities')),
       S.divider(),
       S.listItem()
         .title('Blog posts')

@@ -697,7 +697,7 @@ export const events: Event[] = [
   {
     slug: 'compelled-november-2026',
     title: 'Compelled',
-    type: 'worship',
+    types: ['worship'],
     start: '2026-11-06T18:00:00-06:00',
     end: '2026-11-06T21:00:00-06:00',
     timezone: 'America/Chicago',
@@ -723,7 +723,7 @@ export const events: Event[] = [
   {
     slug: 'gospel-conversations-training-november-2026',
     title: 'Gospel Conversations Training',
-    type: 'training',
+    types: ['training'],
     start: '2026-11-08T16:00:00-06:00',
     end: '2026-11-08T20:00:00-06:00',
     timezone: 'America/Chicago',
@@ -751,7 +751,7 @@ export const events: Event[] = [
   {
     slug: 'harvest-push-november-2026',
     title: 'Harvest Push',
-    type: 'harvest',
+    types: ['harvest'],
     start: '2026-11-09T00:00:00-06:00',
     end: '2026-11-13T23:30:00-06:00',
     timezone: 'America/Chicago',

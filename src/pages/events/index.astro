@@ -74,6 +74,7 @@ const past = getPastEvents().slice(0, 6);
             <FilterChips
               label="Filter events by type"
               attr="event-type"
+              multi
               target="#event-list"
               options={[
                 { value: 'training', label: 'Training' },
@@ -129,7 +130,7 @@ const past = getPastEvents().slice(0, 6);
 
   <CtaBand
     title="Want to bring a training to your church or group?"
-    body="We would love to speak to you about hosting a Movement or Four Fields Vision Cast with your church leaders, or a Gospel Conversations Training to equip your church, or a Four Fields Intensive, or running a Disciple-Making or Missionary Residency, or even planning a Vision Trip to one of our international strategies in South Asia, the Middle East, or North Africa!"
+    body="We’d love to connect with you and explore how we can partner to equip your church and advance disciple-making movements. Whether you’re interested in hosting a Movement or Four Fields Vision Cast for your church leaders, equipping your congregation through Gospel Conversations Training, participating in a Four Fields Intensive, launching a Disciple-Making or Missionary Residency, or planning a Vision Trip to one of our international strategies in South Asia, the Middle East, or North Africa, we’d love to help you take the next step!"
     primary={{ label: 'Ask about hosting', href: '/resources/#questions' }}
     secondary={{ label: 'Training resources', href: '/resources/' }}
     tone="yellow"

@@ -23,6 +23,6 @@ export default defineConfig({
 
   document: {
     // Keep the "Create new" menu to the things editors actually add.
-    newDocumentOptions: (prev) => prev.filter((item) => ['event', 'rhythm', 'post', 'author'].includes(item.templateId)),
+    newDocumentOptions: (prev) => prev.filter((item) => ['event', 'rhythm', 'opportunity', 'post', 'author'].includes(item.templateId)),
   },
 })

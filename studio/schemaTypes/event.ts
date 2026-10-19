@@ -38,14 +38,17 @@ export const event = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'type',
+      name: 'types',
       title: 'Type of event',
-      type: 'string',
+      type: 'array',
+      of: [{type: 'string'}],
       group: 'basics',
-      description: 'Used for the filter buttons on the Events page.',
-      options: {list: TYPES, layout: 'radio', direction: 'horizontal'},
-      validation: (rule) => rule.required(),
+      description: 'Tick every type that fits (for example Worship and Mobilization). Used for the filter buttons on the Events page.',
+      options: {list: TYPES, layout: 'grid'},
+      validation: (rule) => rule.required().min(1).unique(),
     }),
+    // Older events stored a single type here; it is copied into "Type of event" above and kept hidden.
+    defineField({name: 'type', type: 'string', hidden: true, readOnly: true}),
     defineField({
       name: 'start',
       title: 'Starts',
@@ -151,12 +154,13 @@ export const event = defineType({
     {title: 'Date, latest first', name: 'startDesc', by: [{field: 'start', direction: 'desc'}]},
   ],
   preview: {
-    select: {title: 'title', start: 'start', type: 'type', media: 'image'},
-    prepare({title, start, type, media}) {
+    select: {title: 'title', start: 'start', types: 'types', type: 'type', media: 'image'},
+    prepare({title, start, types, type, media}) {
       const date = start
         ? new Date(start).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric', timeZone: 'America/Chicago'})
         : 'No date yet'
-      const label = TYPES.find((t) => t.value === type)?.title ?? ''
+      const values: string[] = Array.isArray(types) && types.length ? types : type ? [type] : []
+      const label = values.map((v) => TYPES.find((t) => t.value === v)?.title ?? v).join(', ')
       return {title, subtitle: [date, label].filter(Boolean).join(' · '), media}
     },
   },

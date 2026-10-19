@@ -269,6 +269,12 @@ ol {
   color: var(--text);
 }
 
+/* The hidden attribute must always win over component layout (display: grid/flex),
+   otherwise filters mark items hidden but they stay on screen. */
+[hidden] {
+  display: none !important;
+}
+
 /* ---------- Layout utilities ---------- */
 .container {
   width: 100%;
