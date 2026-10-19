@@ -7,6 +7,7 @@ interface ImportMetaEnv {
   readonly PUBLIC_FORMSPREE_INQUIRY_ID?: string;
   readonly SANITY_PROJECT_ID?: string;
   readonly SANITY_DATASET?: string;
+  readonly DEV: boolean;
 }
 
 interface ImportMeta {
