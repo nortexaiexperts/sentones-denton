@@ -114,7 +114,8 @@ export interface Rhythm {
 export interface Event {
   slug: string;
   title: string;
-  type: EventType;
+  /** One or more types, e.g. ['worship', 'mobilization']. The first is the main one. */
+  types: EventType[];
   /** ISO 8601 with offset, e.g. 2026-11-14T09:00:00-06:00 */
   start: string;
   end: string | null;
