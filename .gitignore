@@ -30,3 +30,7 @@ qa/review-pack/
 
 # client feedback documents (contain personal contact details; keep out of the repo)
 Feedback/
+
+# original photos from the client (may contain GPS/location metadata). The cleaned,
+# resized copies the site uses live in src/assets/photos (leading slash = root folder only).
+/photos/
