@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import PillarStrip from '../components/PillarStrip.astro';
-import StatementBand from '../components/StatementBand.astro';
+import Photo from '../components/Photo.astro';
 import Accordion from '../components/Accordion.astro';
 import InquiryForm from '../components/InquiryForm.astro';
 import SampleBadge from '../components/SampleBadge.astro';
@@ -53,7 +53,6 @@ const facts = [
     </div>
   </section>
 
-  <StatementBand text={mtc.statement} tone="black" size="text" quote={false} />
   <PillarStrip />
 
   <!-- Who it's for -->
@@ -81,33 +80,14 @@ const facts = [
       <div class="format__intro">
         <p class="eyebrow eyebrow--rule">Format</p>
         <h2>Residential, local and hands-on</h2>
-        <p class="lead">
-          {mtc.format.residential ?? 'The residential format for Denton will be confirmed with the first cohort.'}
-          {mtc.format.residential && <SampleBadge status={flag('residential')} class="format__badge" />}
-        </p>
-        {
-          mtc.accommodation && (
-            <p class="muted">
-              {mtc.accommodation} <SampleBadge status={flag('accommodation')} />
-            </p>
-          )
-        }
+        <p class="lead">{mtc.statement}</p>
       </div>
-      <div class="rhythms">
-        <h3 class="rhythms__title">Time commitment</h3>
-        <ul class="rhythms__list">
-          {
-            mtc.format.weeklyCommitment.map((r) => (
-              <li class="rhythm">
-                <span class="rhythm__hours">{r.hours}</span>
-                <span class="rhythm__text">
-                  <strong>{r.label}</strong>
-                  <span class="muted">{r.body}</span>
-                </span>
-              </li>
-            ))
-          }
-        </ul>
+      <div class="format__photo">
+        <Photo
+          image={{ src: 'mtc-format-study', alt: 'An open Bible at Acts 13 beside hand-drawn Four Fields notes and a tablet sketch of the gospel' }}
+          widths={[480, 768, 1024, 1280]}
+          sizes="(min-width: 64em) 40vw, 100vw"
+        />
       </div>
     </div>
   </section>
@@ -147,18 +127,11 @@ const facts = [
           {mtc.eligibility.map((e) => <li>{e}</li>)}
         </ul>
         {
-          (mtc.cost || mtc.financialSupport) && (
+          mtc.cost && (
             <div class="apply__cost">
-              {mtc.cost && (
-                <p>
-                  <strong>Cost:</strong> {mtc.cost} <SampleBadge status={flag('cost')} />
-                </p>
-              )}
-              {mtc.financialSupport && (
-                <p>
-                  <strong>Financial support:</strong> {mtc.financialSupport} <SampleBadge status={flag('financialSupport')} />
-                </p>
-              )}
+              <p>
+                <strong>Cost:</strong> {mtc.cost} <SampleBadge status={flag('cost')} />
+              </p>
             </div>
           )
         }
@@ -301,41 +274,24 @@ const facts = [
     .format {
       grid-template-columns: 1fr 1fr;
       gap: var(--space-8);
-      align-items: start;
+      align-items: center;
     }
   }
-  .format__badge {
-    vertical-align: middle;
-  }
-  .rhythms__title {
-    font-size: var(--fs-h4);
-    color: var(--c-yellow);
-  }
-  .rhythms__list {
-    list-style: none;
+  .format__intro .lead {
     margin: 0;
-    padding: 0;
-    border-top: 1px solid var(--rule);
   }
-  .rhythm {
-    display: grid;
-    grid-template-columns: 7rem 1fr;
-    gap: var(--space-4);
-    padding: var(--space-4) 0;
-    border-bottom: 1px solid var(--rule);
+  .format__photo {
+    aspect-ratio: 4 / 5;
+    max-height: 38rem;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--c-grey-800);
   }
-  .rhythm__hours {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    line-height: 1.1;
-    color: var(--accent-text);
-    text-transform: uppercase;
-  }
-  .rhythm__text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    font-size: var(--fs-small);
+  .format__photo :global(picture),
+  .format__photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .focus {
     list-style: none;
